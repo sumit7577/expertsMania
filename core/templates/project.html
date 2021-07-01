@@ -1,0 +1,604 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Project {% endblock title %}
+
+{% block content %}
+
+<style>
+  .typeo {
+    position: relative;
+    bottom: 120px;
+    left: 50px;
+  }
+
+  .heading {
+    position: relative;
+    top: 85px;
+    z-index: 10;
+    width: 90%;
+    margin-left: 25px;
+</style>
+{% if message %}
+<div class="header-body heading" id="popup">
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Success!!</strong> {{message}}
+  </div>
+</div>
+{% endif %}
+<!-- Header -->
+<div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+  style="min-height: 600px; background-image: url(/static/assets/img/theme/team-3-800x800.jpg); background-size: cover; background-position: center top;">
+  <!-- Mask -->
+  <span class="mask bg-gradient-default opacity-8"></span>
+
+  <!-- Header container -->
+  <div class="container-fluid d-flex align-items-center">
+
+    <div class="row">
+      <div class="col-lg-7 col-md-10">
+        <h1 class="display-2 text-white"> Title: {{ ProjectData.0.Title }}</h1>
+        <p class="text-white mt-0 mb-5">This is your Project View. You can see the progress you've made with your work
+          and manage your projects or assigned tasks</p>
+        <button id="fetchdata" class="btn btn-info">Download Docs</button>
+      </div>
+
+    </div>
+  </div>
+
+
+
+</div>
+
+<!-- Header -->
+
+<div class="col-xl-8 order-xl-1 typeo">
+  <div class="card bg-secondary shadow">
+    <div class="card-header bg-white border-0">
+      <div class="row align-items-center">
+        <div class="col-8">
+          <h3 class="mb-0">Project Details</h3>
+        </div>
+        <div class="col-4 text-right">
+          <a href="/tables" class="btn btn-sm btn-primary">Settings</a>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <form method="post" enctype="multipart/form-data" action="/project/{{id}}/">{% csrf_token %}
+      {% if request.user.is_superuser == False %}
+        <h6 class="heading-small text-muted mb-4">Project information</h6>
+        <div class="pl-lg-4">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="input-username">Project Title</label>
+                <div class="form-control form-control-alternative">
+                  {{ ProjectData.0.Title }}
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="input-email">Published Date</label>
+                <div class="form-control form-control-alternative">
+                  {{ ProjectData.0.Date}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="input-first-name">Project Type</label>
+                <div class="form-control form-control-alternative">
+                  {{ ProjectData.0.projectType }}
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="input-last-name">Published By</label>
+                <div class="form-control form-control-alternative">
+                  {{ ProjectData.0.user.user.username }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+{% if request.user.usertype.userType == "Client" and not request.user.is_superuser %}
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="input-first-name">Total Amount Paid</label>
+                <div class="form-control form-control-alternative">
+                  Rs.{{ paid }}
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="input-last-name">Payment Status</label>
+                <div class="form-control form-control-alternative">
+                  {{ ProjectData.0.PaymentStatus }}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        <hr class="my-4" />
+
+
+        <h6 class="heading-small text-muted mb-4">Other Details</h6>
+        <div class="pl-lg-4">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="form-control-label" for="input-address">Project Documents</label>
+                <div class="form-control form-control-alternative">
+                  <input type="file" multiple id="app" name="app">
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="form-control-label" for="input-address">Files</label>
+                <div class="form-control form-control-alternative" style="height: inherit;">
+                  {% for i in fileData %}
+                  <div>
+                  <a href="{{ i.files.url }}"  download="{{ i.fileName }}">{{ i.fileName }} </a>
+                </div>
+                  {% empty %}
+                  <h1> no data</h1>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label class="form-control-label" for="input-city">Project Price (Inr)</label>
+              <div class="form-control form-control-alternative">
+                {% if request.user.usertype.userType == "Client" %}
+                Rs.{{ ProjectData.0.ActualPrice }}
+                {% else %}
+                Rs.{{ ProjectData.0.CoderPrice }}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            {% if request.user.usertype.userType == "Developer" %}
+            <div class="form-group">
+              <label for="ptype" class="block text-sm font-medium text-gray-700">Completion</label>
+              <div class="form-control form-control-alternative">
+                <select id="ptype" name="ptype"
+                  class=" shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                  <option>25%</option>
+                  <option>50%</option>
+                  <option>75%</option>
+                  <option>100%</option>
+                </select>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label class="form-control-label" for="input-country">Assigned To</label>
+              <div class="form-control form-control-alternative">
+                {{ ProjectData.0.AssignedTo }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-4" />
+        <!-- Description -->
+        <h6 class="heading-small text-muted mb-4">Description</h6>
+        <div class="pl-lg-4">
+          <div class="form-group">
+            <label>Project Description</label>
+            <div class="form-control form-control-alternative">{{ ProjectData.0.Description}} </div>
+          </div>
+        </div>
+        <button type="submit" style="margin-left:15px; margin-top:8px;" class="btn btn-info">Update</button>
+
+
+
+        {% else %}
+
+
+        <h6 class="heading-small text-muted mb-4">Basic information</h6>
+        <div class="pl-lg-4">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="name">Project Title</label>
+                  <input type="text" class="form-control form-control-alternative" id="name" placeholder="{{ ProjectData.0.Title }}" value="{{ ProjectData.0.Title }}" name="name">
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="input-email">Published Date</label>
+                <div class="form-control form-control-alternative">
+                  {{ ProjectData.0.Date}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="input-first-name">Project Type</label>
+                <div>
+                  <select  id="ptype" name="ptype"
+                  class="form-control form-control-alternative shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                  <option value="{{ ProjectData.0.projectType }}">{{ ProjectData.0.projectType }}</option>
+                  <option>Dissertation</option>
+                  <option>Assignment</option>
+                  <option>Technical Report</option>
+                  <option>Others</option>
+                </select>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="input-last-name">Published By</label>
+                <div class="form-control form-control-alternative">
+                  {{ ProjectData.0.user.user.username }}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="price">Client Price</label>
+                <input type="number" class="form-control form-control-alternative" id="price" placeholder="Rs.{{ ProjectData.0.ActualPrice }}" value="{{ ProjectData.0.ActualPrice }}" name="price">
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="cprice">Coder Price</label>
+                <input type="number" class="form-control form-control-alternative" id="cprice" placeholder="Rs.{{ ProjectData.0.CoderPrice }}" value="{{ ProjectData.0.CoderPrice }}" name="cprice">
+              </div>
+            </div>
+          </div>
+
+
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="input-last-name">Complete Percentage</label>
+                <div class="form-control form-control-alternative">
+                  {{ ProjectData.0.CompletePercentage }}
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="input-last-name">Total Client Paid</label>
+                <div class="form-control form-control-alternative">
+                  Rs.{{ paid }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="input-last-name">Sended For Bid</label>
+                <div class="form-control form-control-alternative">
+                  {% for z in sended %} {{ z.user.username }}, {% empty %} Not Sended {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <hr class="my-4" />
+
+        <h6 class="heading-small text-muted mb-4">Bids information</h6>
+  <div class="flex flex-col">
+  <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8" style="max-height: 350px;
+    overflow-x: scroll;">
+    <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+      <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Name (Sent TO)
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Bid Amount
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            {% for k in SentTO %}
+            <tr>
+            
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0 h-10 w-10">
+                    <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60" alt="">
+                  </div>
+                  <div class="ml-4">
+                    <div class="text-sm font-medium text-gray-900">
+                      {{ k.userName.user.username }}
+                    </div>
+                    <div class="text-sm text-gray-500">
+                      {{ k.userName.user.email }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">Rs.{{ k.bidAmount }}</div>
+              </td>
+             
+            </tr>
+            {% endfor %}
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="my-4" />
+
+        <h6 class="heading-small text-muted mb-4">Other Details</h6>
+        <div class="pl-lg-4">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="form-control-label" for="input-address">Project Documents</label>
+                <div class="form-control form-control-alternative">
+                  <input type="file" multiple id="app" name="app">
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="form-control-label" for="input-address">Files</label>
+                <div class="form-control form-control-alternative" style="height: inherit;">
+                  {% for i in fileData %}
+                  <div>
+                  <a href="{{ i.files.url }}"  download="{{ i.fileName }}">{{ i.fileName }} </a> ({{ i.user.username }}) (Date:{{ i.date }})
+                </div>
+                  {% empty %}
+                  <h2> No Data</h2>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label for="ptype" class="form-control-label" for="send">Send For Bid</label>
+              <div>
+                <select id="sender" name="sender"
+                  class="form-control form-control-alternative shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-md" multiple>
+                  {% for i in Names %}
+                  <option value="{{ i.id }}">{{ i.user.username }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label for="assign" class="form-control-label" for="assign">Assign To</label>
+              <div>
+                <select id="assign" name="assign"
+                  class="form-control form-control-alternative shadow-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 font-medium">
+                  {% for z in Names %}
+                  <option value="{{ z.user.id }}">{{ z.user.username }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label class="form-control-label" for="input-country">Assign Amount</label>
+                <input type="number" class="form-control form-control-alternative" id="amount" name="amount" placeholder="Enter Price for specific Developer">
+            </div>
+          </div>
+        </div>
+
+
+        <hr class="my-4" />
+        <h6 class="heading-small text-muted mb-4">Assigned Information</h6>
+  <div class="flex flex-col">
+  <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8" style="max-height: 350px;
+    overflow-x: scroll;">
+    <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+      <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Developer Name
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Amount
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Date
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            {% for k in assigned %}
+            <tr>
+            
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">{{ k.userName.user.username }}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">{{ k.Amount }}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">{{ k.Date }}</div>
+              </td>
+             
+            </tr>
+            {% endfor %}
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+        <hr class="my-4" />
+        <h6 class="heading-small text-muted mb-4">Project Status</h6>
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label for="prstatus" class="form-control-label" for="prstatus">Project Status</label>
+              <div>
+                <select id="prstatus" name="prstatus"
+                  class="form-control form-control-alternative shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                  <option value="{{ ProjectData.0.Status }}">{{ ProjectData.0.Status }}</option>
+                  <option>Not Accepted</option>
+                  <option>Accepted</option>
+                  <option>Assigned</option>
+                  <option>Delievred</option>
+                  <option>Completed</option>
+                  
+                </select>
+              </div>
+            </div>
+          </div>
+
+        <div class="col-lg-4">
+            <div class="form-group">
+              <label for="pstatus" class="form-control-label" for="input-country">Payment Status</label>
+              <div>
+                <select id="pstatus" name="pstatus"
+                  class="form-control form-control-alternative shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                  <option value="{{ ProjectData.0.PaymentStatus }}">{{ ProjectData.0.PaymentStatus }}</option>
+                  <option>Not Paid</option>
+                  <option>Partially Paid</option>
+                  <option>Fully Paid</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+
+        <div class="col-lg-4">
+            <div class="form-group">
+              <label class="form-control-label" for="clientPaid">Client Paid</label>
+              <input type="number" class="form-control form-control-alternative" id="clientPaid" placeholder="client Paid" name="clientPaid">
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-4" />
+        <h6 class="heading-small text-muted mb-4">Payment Information</h6>
+  <div class="flex flex-col">
+  <div class="my-2 overflow-x-auto sm:-mx-6 lg:-mx-8" style="max-height: 350px;
+    overflow-x: scroll;">
+    <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+      <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Paid Amount
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Date
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            {% for k in money %}
+            <tr>
+            
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="ml-4">
+                    <div class="text-sm font-medium text-gray-900">
+                      Rs.{{ k.Amount }}
+                    </div>
+                    <div class="text-sm text-gray-500">
+                      ({{ k.projectName.user.user.username }})
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">{{ k.Date }}</div>
+              </td>
+             
+            </tr>
+            {% endfor %}
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+        
+        <hr class="my-4" />
+        <!-- Description -->
+        <h6 class="heading-small text-muted mb-4">Description</h6>
+        <div class="pl-lg-4">
+          <div class="form-group">
+            <label>Project Description</label>
+            <input type="text" value="{{ ProjectData.0.Description }}" class="form-control form-control-alternative" id="desc" placeholder="{{ ProjectData.0.Description }}" name="desc">
+          </div>
+        </div>
+        <button type="submit" style="margin-left:15px; margin-top:8px;" class="btn btn-info">Update</button>
+        
+        {% endif %}
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+
+<script>
+  let ab = document.getElementById("popup");
+  if (ab) {
+    setTimeout(() => {
+      ab.remove();
+    }, 2000);
+  }
+
+  async function fetchData() {
+    const data = window.location;
+    const url = data.origin + "/fileDownload";
+    window.open(url,"_blank");
+  }
+
+  const button = document.getElementById("fetchdata").addEventListener("click", fetchData);
+
+</script>
+{% endblock content %}

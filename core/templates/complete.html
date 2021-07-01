@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  <title>{% block title %}{% endblock %} ExpertsMania</title>
+</head>
+
+<body>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap");
+
+    body {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.com/svgjs' width='1440' height='560' preserveAspectRatio='none' viewBox='0 0 1440 560'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1000%26quot%3b)' fill='none' data-darkreader-inline-fill='' style='--darkreader-inline-fill:none%3b'%3e%3crect width='1440' height='560' x='0' y='0' fill='%230e2a47' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%230b2239%3b'%3e%3c/rect%3e%3cpath d='M432.71 357.64L464.13 357.64L464.13 369.97L432.71 369.97z' fill='%23e73635' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%23e94544%3b'%3e%3c/path%3e%3cpath d='M434.45 212.54L439.9 212.54L439.9 244.07L434.45 244.07z' fill='%23e73635' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%23e94544%3b'%3e%3c/path%3e%3cpath d='M197.25 284.51a50.29 50.29 0 1 0-25.72-97.24z' stroke='%23e73635' data-darkreader-inline-stroke='' style='--darkreader-inline-stroke:%23e94544%3b'%3e%3c/path%3e%3cpath d='M248.67 250.61L273.9 250.61L273.9 259.11L248.67 259.11z' stroke='%23037b0b' data-darkreader-inline-stroke='' style='--darkreader-inline-stroke:%2377fc80%3b'%3e%3c/path%3e%3cpath d='M355.25 295.27 a25.67 25.67 0 1 0 51.34 0 a25.67 25.67 0 1 0 -51.34 0z' fill='%23d3b714' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%23a99210%3b'%3e%3c/path%3e%3cpath d='M400.31 71.92L441.98 71.92L441.98 113.59L400.31 113.59z' stroke='%23037b0b' data-darkreader-inline-stroke='' style='--darkreader-inline-stroke:%2377fc80%3b'%3e%3c/path%3e%3cpath d='M314.61 464.5L367.76 464.5L367.76 465.82L314.61 465.82z' fill='%23e73635' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%23a71514%3b'%3e%3c/path%3e%3cpath d='M394.71 181.59L405.87 181.59L405.87 190.46L394.71 190.46z' stroke='%23d3b714' data-darkreader-inline-stroke='' style='--darkreader-inline-stroke:%23edd33d%3b'%3e%3c/path%3e%3cpath d='M1432.83 319.57L1435.9 319.57L1435.9 322.64L1432.83 322.64z' fill='%23e73635' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%23e94544%3b'%3e%3c/path%3e%3cpath d='M1201.55 364.9L1218.82 364.9L1218.82 374.78L1201.55 374.78z' stroke='%23037b0b' data-darkreader-inline-stroke='' style='--darkreader-inline-stroke:%2377fc80%3b'%3e%3c/path%3e%3cpath d='M1111.7 554.74L1115.88 554.74L1115.88 607.33L1111.7 607.33z' fill='%23037b0b' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%23026209%3b'%3e%3c/path%3e%3cpath d='M507.72 225.61L512.89 225.61L512.89 230.78L507.72 230.78z' fill='%23037b0b' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%2377fc80%3b'%3e%3c/path%3e%3cpath d='M330.54 497.71a10.86 10.86 0 1 0 21.68 1.42z' stroke='%23e73635' data-darkreader-inline-stroke='' style='--darkreader-inline-stroke:%23e94544%3b'%3e%3c/path%3e%3cpath d='M1181.36 115.34L1217.04 115.34L1217.04 154.86L1181.36 154.86z' stroke='%23d3b714' data-darkreader-inline-stroke='' style='--darkreader-inline-stroke:%23edd33d%3b'%3e%3c/path%3e%3cpath d='M417.68 432.95L433.05 432.95L433.05 453.07L417.68 453.07z' fill='%23e73635' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%23e94544%3b'%3e%3c/path%3e%3cpath d='M1122.51 522.65a28.27 28.27 0 1 0 0.53 56.54z' fill='%23e73635' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%23a71514%3b'%3e%3c/path%3e%3cpath d='M5.67 514.95L42.13 514.95L42.13 549.99L5.67 549.99z' stroke='%23037b0b' data-darkreader-inline-stroke='' style='--darkreader-inline-stroke:%2377fc80%3b'%3e%3c/path%3e%3cpath d='M952.24 488.17L963.32 488.17L963.32 492.38L952.24 492.38z' stroke='%23037b0b' data-darkreader-inline-stroke='' style='--darkreader-inline-stroke:%2377fc80%3b'%3e%3c/path%3e%3cpath d='M1140.85 152.25a4.54 4.54 0 1 0-4.27 8.01z' stroke='%23d3b714' data-darkreader-inline-stroke='' style='--darkreader-inline-stroke:%23edd33d%3b'%3e%3c/path%3e%3cpath d='M334.3 451.64a38.23 38.23 0 1 0 67.08 36.7z' fill='%23d3b714' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%23a99210%3b'%3e%3c/path%3e%3cpath d='M806.34 110.86L829.04 110.86L829.04 133.56L806.34 133.56z' fill='%23037b0b' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%2377fc80%3b'%3e%3c/path%3e%3cpath d='M1038.53 96.88L1080.34 96.88L1080.34 138.69L1038.53 138.69z' stroke='%23e73635' data-darkreader-inline-stroke='' style='--darkreader-inline-stroke:%23e94544%3b'%3e%3c/path%3e%3cpath d='M357.57 117.52L410.43 117.52L410.43 167.83L357.57 167.83z' stroke='%23e73635' data-darkreader-inline-stroke='' style='--darkreader-inline-stroke:%23e94544%3b'%3e%3c/path%3e%3cpath d='M684.26 164.79L705.54 164.79L705.54 167.04L684.26 167.04z' fill='%23d3b714' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%23edd33d%3b'%3e%3c/path%3e%3cpath d='M336.23 205.75L362.68 205.75L362.68 232.2L336.23 232.2z' fill='%23037b0b' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%2377fc80%3b'%3e%3c/path%3e%3cpath d='M401.9 33.01 a16.88 16.88 0 1 0 33.76 0 a16.88 16.88 0 1 0 -33.76 0z' fill='%23d3b714' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%23edd33d%3b'%3e%3c/path%3e%3cpath d='M979.77 492.24 a47.23 47.23 0 1 0 94.46 0 a47.23 47.23 0 1 0 -94.46 0z' fill='%23d3b714' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%23a99210%3b'%3e%3c/path%3e%3cpath d='M115.94 452.18L141.64 452.18L141.64 491.54L115.94 491.54z' fill='%23d3b714' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%23edd33d%3b'%3e%3c/path%3e%3cpath d='M1210.8 1.96L1238.46 1.96L1238.46 25.61L1210.8 25.61z' stroke='%23d3b714' data-darkreader-inline-stroke='' style='--darkreader-inline-stroke:%23edd33d%3b'%3e%3c/path%3e%3cpath d='M845.28 97.49L874.46 97.49L874.46 103.01L845.28 103.01z' stroke='%23037b0b' data-darkreader-inline-stroke='' style='--darkreader-inline-stroke:%2377fc80%3b'%3e%3c/path%3e%3cpath d='M616.58 258.68L661.42 258.68L661.42 286.73L616.58 286.73z' stroke='%23037b0b' data-darkreader-inline-stroke='' style='--darkreader-inline-stroke:%2377fc80%3b'%3e%3c/path%3e%3cpath d='M300.62 117.55L326.92 117.55L326.92 143.85L300.62 143.85z' fill='%23037b0b' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%2377fc80%3b'%3e%3c/path%3e%3cpath d='M1372.63 67.41L1409.93 67.41L1409.93 67.64L1372.63 67.64z' stroke='%23037b0b' data-darkreader-inline-stroke='' style='--darkreader-inline-stroke:%2377fc80%3b'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1000'%3e%3crect width='1440' height='560' fill='white' data-darkreader-inline-fill='' style='--darkreader-inline-fill:%23181a1b%3b'%3e%3c/rect%3e%3c/mask%3e%3c/defs%3e%3c/svg%3e");
+    }
+
+    .bodyPart {
+      width: 50%;
+      margin-left: 38%;
+      margin-top: 75px;
+    }
+
+    .textData {
+      position: relative;
+      bottom: 21px;
+      right: 8px;
+    }
+
+    .logoBar {
+      color: white;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3),
+        -5px -5px 10px rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      height: 3.5rem;
+      width: 30%;
+      text-align: left;
+      padding-top: 5px;
+      margin-left: 40px;
+      padding-left: 40px;
+      margin-top: 20px;
+      font-weight: 400;
+      font-family: 'Yusei Magic', sans-serif;
+    }
+  </style>
+  <h1 class="text-4xl font-medium logoBar">ExpertsMania </h1>
+
+{% if data %}
+{% if success %}
+<div class="header-body heading mt-3" id="popup">
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Success!!</strong> {{data}}
+  </div>
+</div>
+{% else %}
+<div class="header-body heading mt-3" id="popup">
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Error!!</strong> {{data}}
+  </div>
+</div>
+{% endif %}
+{% endif %}
+
+  <div class="bodyPart">
+    <div class="mt-5 md:mt-0 md:col-span-2">
+      <form action="/profile" method="post">{% csrf_token %}
+        <div class="shadow overflow-hidden sm:rounded-md">
+          <div class="px-4 py-5 bg-white sm:p-6">
+            <h1 class="block text-4xl font-medium text-gray-700 textData">Complete Your Profile</h1>
+            <div class="grid grid-cols-6 gap-6">
+              <div class="col-span-6 sm:col-span-3 mb-3">
+                <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
+                <div class="form-control form-control-alternative">
+                {{request.user.first_name}}
+              </div>
+              </div>
+
+              <div class="col-span-6 sm:col-span-3">
+                <label for="last_name" class="block text-sm font-medium text-gray-700">Last name</label>
+                <div class="form-control form-control-alternative">
+                {{request.user.last_name}}
+              </div>
+              </div>
+
+              <div class="col-span-6 sm:col-span-4 mb-3">
+                <label for="email_address" class="block text-sm font-medium text-gray-700">Email address</label>
+                
+                {{request.user.email}}
+              
+              </div>
+              {% if request.user.usertype.userType == "Developer" %}
+              <div class="col-span-6 sm:col-span-6 lg:col-span-2 mb-3 " style="position: relative; right: 25px;">
+                <label for="city" class="block text-sm font-medium text-gray-700">Mobile Number</label>
+                <input type="number" class="form-control form-control-alternative" id="number" placeholder="Mobile Number" name="number">
+              </div>
+
+              <div class="col-span-6 sm:col-span-3">
+                <label for="skills" class="block text-sm font-medium text-gray-700">Skills</label>
+                <select id="skills" name="skills"
+                  class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                  <option>Android Development</option>
+                  <option>Web Development</option>
+                  <option>Machine Learning</option>
+                  <option>Data Science</option>
+                  <option>Artificial Intelligence</option>
+                </select>
+              </div>
+              <div class="col-span-6 sm:col-span-6 lg:col-span-2">
+                <label for="city" class="block text-sm font-medium text-gray-700">Description (tell us about urself and
+                  ur works)</label>
+                <input type="text" name="desc" id="desc"
+                  class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+              </div>
+              {% else %}
+              <div class="col-span-6 sm:col-span-6 lg:col-span-2" style="position: relative; right: 25px;">
+                <label for="city" class="block text-sm font-medium text-gray-700" >Mobile Number</label>
+                <input type="number" class="form-control form-control-alternative" id="number" placeholder="Mobile Number" name="number">
+              </div>
+
+            </div>
+            <div class="col-span-6 sm:col-span-3 mb-3s">
+              <label for="country" class="block text-sm font-medium text-gray-700">Preferred Work</label>
+              <select id="ptype" name="ptype"
+                class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <option>Production Projects</option>
+                <option>College Projects</option>
+                <option>Others</option>
+              </select>
+            </div>
+
+
+            <h6 class="heading-small text-muted mb-4">Description</h6>
+        <div class="pl-lg-4">
+          <div class="form-group">
+            <label>Project Description</label>
+            <input type="text" class="form-control form-control-alternative" id="desc" placeholder="Tell about urself and ur work" name="desc">
+          </div>
+        </div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+          <button type="submit"
+            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Save
+          </button>
+        </div>
+    </div>
+    </form>
+  </div>
+  </div>
+  </div>
+  </div>
+
+  <!-- Optional JavaScript; choose one of the two! -->
+
+  <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+    crossorigin="anonymous"></script>
+
+  <!-- Option 2: Separate Popper and Bootstrap JS -->
+  <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
+    -->
+</body>
+<script>
+let ab = document.getElementById("popup");
+  if (ab) {
+    setTimeout(() => {
+      ab.remove();
+    }, 2000);
+  }
+</script>
+
+</html>
