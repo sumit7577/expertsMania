@@ -18,15 +18,19 @@ projectId = None
 def index(request):
     context = {}
     context['segment'] = 'index'
-
-    if(request.user.usertype.userType == "Developer" and not request.user.is_superuser):
-        if(not request.user.developer):
+    if(not request.user.is_superuser and request.user.usertype.userType == "Developer"):
+        try:
+            request.user.developer
+        except:
             return redirect("/profile")
         context["objects"] = Devfunc(request)
+        print(context["objects"])
         context["api"] = graphApi(request)
 
-    elif(request.user.usertype.userType == "Client" and not request.user.is_superuser):
-        if(not request.user.client):
+    elif(not request.user.is_superuser and request.user.usertype.userType == "Client"):
+        try:
+            request.user.client
+        except:
             return redirect("/profile")
         context["objects"] = ClientFunc(request)
         context["api"] = graphApi(request)
@@ -71,16 +75,13 @@ def tables(request):
     table = {}
     table["segment"] = "tables"
 
-    if(request.user.usertype.userType == "Client" and not request.user.is_superuser):
-        if(not request.user.client):
-            return redirect("/profile")
+    if(not request.user.is_superuser and request.user.usertype.userType == "Client"):
         data = Project.objects.filter(user=request.user.client)
+        Projectdata = Assign.objects.filter(userName=request.user.developer.id)
         table["projectData"] = data
         table["objects"] = ClientFunc(request)
 
-    elif(request.user.usertype.userType == "Developer" and not request.user.is_superuser):
-        if(not request.user.developer):
-            return redirect("/profile")
+    elif(not request.user.is_superuser and request.user.usertype.userType == "Developer"):
         Projectdata = Assign.objects.filter(userName=request.user.developer.id)
         table["projectData"] = Projectdata
         table["objects"] = Devfunc(request)
@@ -103,14 +104,10 @@ def Maps(request):
     if request.user.is_superuser:
         addProject["objects"] = AdminFunc(request)
 
-    elif(request.user.usertype.userType == "Client" and not request.user.is_superuser):
-        if(not request.user.client):
-            return redirect("/profile")
+    elif(request.user.is_superuser and  request.user.usertype.userType == "Client"):
         addProject["objects"] = ClientFunc(request)
 
-    elif(request.user.usertype.userType == "Developer" and not request.user.is_superuser):
-        if(not request.user.developer):
-            return redirect("/register")
+    elif(not request.user.is_superuser  and request.user.usertype.userType == "Developer"):
         data = Project.objects.filter(SentTO=request.user.developer.id)
 
 
@@ -128,7 +125,7 @@ def Maps(request):
             title = request.POST.get("title")
             projectType = request.POST.get("ptype")
             desc = request.POST.get("desc")
-            user = Project(user=request.user, Title=title,
+            user = Project(user=request.user.client, Title=title,
                            Description=desc, projectType=projectType)
             user.save()
             addProject["msg"] = "Project successfully Published"
@@ -162,18 +159,24 @@ def project(request, id):
     data["fileData"] = FilesData
     paid = 0
     projectMoney = Payment.objects.select_related("projectName").filter(projectName=id)
+
     for i in projectMoney:
         paid += i.Amount
     data["paid"] = paid
     create = projectData[0]
+    if(not request.user.is_superuser and request.user.usertype.userType == "Developer"):
+        projectPrice = Assign.objects.select_related("userName").filter(userName=request.user.developer.id,projectName=create)
+        data["Price"] = projectPrice[0].Amount
+
     if request.method == "POST":
-        if(request.user.usertype.userType == "Client" and not request.user.is_superuser):
+        if(not request.user.is_superuser and request.user.usertype.userType == "Client"):
             file = request.FILES["app"]
             File.objects.create(user=request.user,
                                 project=create, files=file, fileName=file)
             data["message"] = "Project Updated Succcessfully"
 
-        elif(request.user.usertype.userType == "Developer" and not request.user.is_superuser):
+        elif(not request.user.is_superuser and request.user.usertype.userType == "Developer"):
+           
             file = request.FILES.getlist("app")
             for i in file:
                 File.objects.create(user=request.user,
@@ -243,7 +246,7 @@ def Devfunc(request):
 
     Earnings = 0
     for i in data:
-        Earnings += i.CoderPrice
+        Earnings += i.Amount
     TotalData.append((data.count(), BidProjects.count(),
                      TodaysProjects, Earnings, BidProjects, FileData))
 
@@ -315,7 +318,7 @@ def graphApi(request):
         monthList.append(months[sample.month])
         sample -= timedelta(30)
 
-    if(request.user.usertype.userType == "Developer" and not request.user.is_superuser):
+    if (not request.user.is_superuser and request.user.usertype.userType == "Developer"):
         counter = 0
         chatData = Assign.objects.select_related(
             "userName").filter(userName=request.user.developer.id, Date__gte=TodayDate-timedelta(27)).filter(Date__lte=TodayDate)
@@ -325,7 +328,7 @@ def graphApi(request):
             coderPrice = 0
 
             for i in chatData:
-                coderPrice += i.CoderPrice
+                coderPrice += i.Amount
 
             chartGraph[counter] = coderPrice
             projectCounter[counter] = chatData.count()
@@ -334,7 +337,7 @@ def graphApi(request):
                 "userName").filter(userName=request.user.developer.id, Date__gte=TodayDate-timedelta(27)).filter(Date__lte=TodayDate)
             counter += 1
 
-    elif(request.user.usertype.userType == "Client" and not request.user.is_superuser):
+    elif(not request.user.is_superuser and request.user.usertype.userType == "Client"):
 
         counter = 0
         chatData = Project.objects.select_related(
@@ -420,8 +423,11 @@ def adminPanel(request, id):
             message = "Project Successfully Updated"
         if assignAmount != "":
             try:
-                Assign.objects.create(userName=assignTo,Amount=assignAmount)
+                data = Developer.objects.filter(id=assignTo)
+                projectData = Project.objects.filter(id=id)
+                Assign.objects.create(userName=data[0],Amount=assignAmount,projectName=projectData[0])
             except:
                 message ="User is Already Assigned"
+           
 
     return message

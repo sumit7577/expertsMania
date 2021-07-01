@@ -132,7 +132,8 @@
       <div class="card-header border-0">
         <h3 class="mb-0">Project Available</h3>
       </div>
-      <div class="table-responsive">
+      <div class="table-responsive" style="max-height: 350px;
+      overflow-x: scroll;">
         <table class="table align-items-center table-flush">
           <thead class="thead-light">
             <tr>
@@ -153,25 +154,25 @@
                     <img alt="Image placeholder" src="/static/assets/img/theme/bootstrap.jpg">
                   </a>
                   <div class="media-body">
-                    <span class="mb-0 text-sm">{{i.Title}}</span>
+                    <span class="mb-0 text-sm">{{i.Title}} {{ i.projectName.Title }}</span>
                   </div>
                 </div>
               </th>
               <td>
-                {% if request.user.usertype.userType == "Client" %}
+                {% if request.user.usertype.userType == "Client" or request.user.is_superuser %}
                 Rs.{{i.ActualPrice}}
                 {% else %}
-                Rs.{{i.CoderPrice}}
+                Rs.{{ i.Amount }}
                 {% endif %}
               </td>
               <td>
                 <span class="badge badge-dot mr-4">
-                  <i class="bg-warning"></i>{{i.Status}}
+                  <i class="bg-warning"></i>{{i.projectName.Status}} {{ i.Status }}
                 </span>
               </td>
               <td>
                 <div class="avatar-group">
-                  <a href="#" class="avatar avatar-sm" data-toggle="tooltip" data-original-title="{{i.AssignedTo}}">
+                  <a href="#" class="avatar avatar-sm" data-toggle="tooltip" data-original-title="{{i.userName.user.username}} {{ assigned }}">
                     <img alt="Image placeholder" src="/static/assets/img/theme/team-1-800x800.jpg"
                       class="rounded-circle">
                   </a>
@@ -179,11 +180,11 @@
               </td>
               <td>
                 <div class="d-flex align-items-center">
-                  <span class="mr-2">{{i.CompletePercentage}}</span>
+                  <span class="mr-2">{{i.CompletePercentage}} {{i.projectName.CompletePercentage}}</span>
                   <div>
                     <div class="progress">
-                      <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="{{i.CompletePercentage}}" aria-valuemin="0"
-                        aria-valuemax="100" style="width: {{i.CompletePercentage}};"></div>
+                      <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="{{i.CompletePercentage}} ccc" aria-valuemin="0"
+                        aria-valuemax="100" style="width: {{i.CompletePercentage}} {{i.projectName.CompletePercentage}};"></div>
                     </div>
                   </div>
                 </div>

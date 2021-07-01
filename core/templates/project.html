@@ -165,7 +165,7 @@
                 {% if request.user.usertype.userType == "Client" %}
                 Rs.{{ ProjectData.0.ActualPrice }}
                 {% else %}
-                Rs.{{ ProjectData.0.CoderPrice }}
+                Rs.{{ Price }}
                 {% endif %}
               </div>
             </div>
@@ -185,14 +185,6 @@
               </div>
             </div>
             {% endif %}
-          </div>
-          <div class="col-lg-4">
-            <div class="form-group">
-              <label class="form-control-label" for="input-country">Assigned To</label>
-              <div class="form-control form-control-alternative">
-                {{ ProjectData.0.AssignedTo }}
-              </div>
-            </div>
           </div>
         </div>
 
@@ -395,7 +387,7 @@
                 <select id="sender" name="sender"
                   class="form-control form-control-alternative shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-md" multiple>
                   {% for i in Names %}
-                  <option value="{{ i.id }}">{{ i.user.username }}</option>
+                  <option {% for k in sended %} {% if i.id == k.id %} selected aria-hidden="true" {% endif %} {% endfor %} value="{{ i.id }}">{{ i.user.username }}</option>
                   {% endfor %}
                 </select>
               </div>
@@ -409,7 +401,7 @@
                 <select id="assign" name="assign"
                   class="form-control form-control-alternative shadow-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 font-medium">
                   {% for z in Names %}
-                  <option value="{{ z.user.id }}">{{ z.user.username }}</option>
+                  <option value="{{ z.user.developer.id }}">{{ z.user.username }}</option>
                   {% endfor %}
                 </select>
               </div>
@@ -428,7 +420,7 @@
         <hr class="my-4" />
         <h6 class="heading-small text-muted mb-4">Assigned Information</h6>
   <div class="flex flex-col">
-  <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8" style="max-height: 350px;
+  <div class="my-2 overflow-x-auto sm:-mx-6 lg:-mx-8" style="max-height: 350px;
     overflow-x: scroll;">
     <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
       <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
@@ -454,7 +446,7 @@
                 <div class="text-sm text-gray-900">{{ k.userName.user.username }}</div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{ k.Amount }}</div>
+                <div class="text-sm text-gray-900">Rs.{{ k.Amount }}</div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm text-gray-900">{{ k.Date }}</div>
@@ -479,7 +471,7 @@
               <div>
                 <select id="prstatus" name="prstatus"
                   class="form-control form-control-alternative shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                  <option value="{{ ProjectData.0.Status }}">{{ ProjectData.0.Status }}</option>
+                  <option aria-hidden="true" value="{{ ProjectData.0.Status }}">{{ ProjectData.0.Status }}</option>
                   <option>Not Accepted</option>
                   <option>Accepted</option>
                   <option>Assigned</option>

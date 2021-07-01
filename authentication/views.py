@@ -43,10 +43,10 @@ def register_user(request):
             user = authenticate(username=username, password=raw_password)
             userType.objects.update_or_create(user=user,userType=usertype)
 
-            msg     = 'User created - please <a href="/login">login</a>.'
+            msg     = 'User created - please <a href="/profile">complete ur profile</a>.'
             success = True
             
-            return redirect("/profile/")
+            return redirect("/profile")
 
         else:
             msg = 'Form is not valid'    

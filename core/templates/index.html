@@ -156,7 +156,8 @@
   </div>
 
   <div class="row mt-5">
-    <div class="col-xl-8 mb-5 mb-xl-0">
+    <div class="col-xl-8 mb-5 mb-xl-0" style="max-height: 350px;
+    overflow-x: scroll;">
       <div class="card shadow">
         <div class="card-header border-0">
           <div class="row align-items-center">
@@ -176,7 +177,7 @@
                 <th scope="col">Project name</th>
                 <th scope="col">Published By</th>
                 <th scope="col">Published Date</th>
-{% if request.user.usertype == "Developer" and not request.user.is_superuser %} <th scope="col">Bid Price</th> {% endif %}
+{% if request.user.usertype.userType == "Developer" and not request.user.is_superuser %} <th scope="col">Bid Price</th> {% endif %}
               </tr>
             </thead>
             <tbody>
@@ -184,16 +185,16 @@
               {% for i in objects.0.4 %}
               <tr>
                 <th scope="row">
-{% if request.user.usertype == "Developer" and not request.user.is_superuser %}  {{ i.projectName.Title }} {% else %} {{ i.Title }} {% endif %}
+ {{ i.projectName.Title }}  {{ i.Title }} 
                 </th>
                 <td>
-{% if request.user.usertype == "Developer" and not request.user.is_superuser %} {{ i.projectName.user.user.username }} {% else %} {{ i.user.user.username }} {% endif %}
+ {{ i.projectName.user.user.username }} {{ i.user.user.username }}
                 </td>
                 <td>
-{% if request.user.usertype == "Developer" and not request.user.is_superuser %}   {{ i.projectName.Date }} {% else %} {{ i.Date }} {% endif %}
+   {{ i.projectName.Date }}  {{ i.Date }} 
                 </td>
                 <td>
-{% if request.user.usertype == "Developer" and not request.user.is_superuser %} <i class="fas fa-arrow-up text-success mr-3"></i> Rs.{{ i.bidAmount }} {% endif %}
+{% if request.user.usertype.userType == "Developer" and not request.user.is_superuser %} <i class="fas fa-arrow-up text-success mr-3"></i> Rs.{{ i.bidAmount }} {% endif %}
                 </td>
               </tr>
               {% endfor %}
@@ -202,7 +203,8 @@
         </div>
       </div>
     </div>
-    <div class="col-xl-4">
+    <div class="col-xl-4" style="max-height: 350px;
+    overflow-x: scroll;">
       <div class="card shadow">
         <div class="card-header border-0">
           <div class="row align-items-center">
