@@ -99,6 +99,56 @@
                   </div>
                   <span class="text-error">{{ form.userType.errors }}</span>
 
+                  <div class="form-group" id="skiller">
+                    <div class="input-group input-group-alternative mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                      </div>
+                      {{ form.Skills }}
+                    </div>
+                  </div>
+                  <span class="text-error">{{ form.Skills.errors }}</span>
+
+                  <div class="form-group" id="projecter">
+                    <div class="input-group input-group-alternative mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                      </div>
+                      {{ form.ProjectType }}
+                    </div>
+                  </div>
+                  <span class="text-error">{{ form.ProjectType.errors }}</span>
+
+                  <div class="form-group" id="collegeName">
+                    <div class="input-group input-group-alternative mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                      </div>
+                      {{ form.College }}
+                    </div>
+                  </div>
+                  <span class="text-error">{{ form.College.errors }}</span>
+
+                  <div class="form-group">
+                    <div class="input-group input-group-alternative mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                      </div>
+                      {{ form.mobile }}
+                    </div>
+                  </div>
+                  <span class="text-error">{{ form.mobile.errors }}</span>
+
+                  <div class="form-group">
+                    <div class="input-group input-group-alternative mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                      </div>
+                      {{ form.Description }}
+                    </div>
+                  </div>
+                  <span class="text-error">{{ form.Description.errors }}</span>
+
                   <div class="form-group">
                     <div class="input-group input-group-alternative">
                       <div class="input-group-prepend">
@@ -155,4 +205,6 @@
 {% endblock content %}
 
 <!-- Specific JS goes HERE --> 
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+
+{% endblock javascripts %}

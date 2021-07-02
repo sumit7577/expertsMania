@@ -1,11 +1,26 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 
 
 userOptions = (
     ("Developer", "Developer"),
     ("Client", "Client")
+)
+
+Skills = (
+    ("Android Development", "Android Development"),
+    ("Web Development", "Web Development"),
+    ("Machine Learning", "Machine Learning"),
+    ("Data Science", "Data Science"),
+    ("Artificial Intelligence", "Artificial Intelligence")
+)
+
+Project = (
+    ("Production Projects", "Production Projects"),
+    ("College Projects", "College Projects"),
+    ("Others", "Others")
 )
 
 
@@ -76,10 +91,55 @@ class SignUpForm(UserCreationForm):
         widget=forms.Select(
             attrs={
                 "placeholder":"User Type",
-                "class":"form-control"
+                "class":"form-control",
+                "id":"userType"
             }
         ))
 
+    Skills = forms.ChoiceField(choices=Skills,
+        widget=forms.Select(
+            attrs={
+                "class":"form-control",
+                "id":"skills"
+            }
+        ))
+    
+    ProjectType = forms.ChoiceField(choices=Project,
+        widget=forms.Select(
+            attrs={
+                "class":"form-control",
+                "id":"projectType"
+            }
+        ))
+    phone = RegexValidator(regex=r'^\+?1?\d{9,15}$',message="Phone number must be starting with country Code and :+91 and must be less than 15 digit")
+    mobile = forms.IntegerField(validators=[phone],
+        widget=forms.NumberInput(
+            attrs={
+                "id":"mobile",
+                "class": "form-control",
+                "placeholder":"Mobile Number"
+            }
+        ))
+
+    Description = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "id":"desc",
+                "class": "form-control",
+                "placeholder":"Tell About yourself and your work"
+            }
+        ))
+
+    College = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "id":"Cname",
+                "class": "form-control",
+                "placeholder":"Please Enter Your College Name"
+            }
+        ))
+
+
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2','first_name','last_name','userType')
+        fields = ('username', 'email', 'password1', 'password2','first_name','last_name','userType','Skills','Description','mobile','ProjectType')

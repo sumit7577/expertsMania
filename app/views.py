@@ -24,7 +24,6 @@ def index(request):
         except:
             return redirect("/profile")
         context["objects"] = Devfunc(request)
-        print(context["objects"])
         context["api"] = graphApi(request)
 
     elif(not request.user.is_superuser and request.user.usertype.userType == "Client"):
@@ -77,7 +76,6 @@ def tables(request):
 
     if(not request.user.is_superuser and request.user.usertype.userType == "Client"):
         data = Project.objects.filter(user=request.user.client)
-        Projectdata = Assign.objects.filter(userName=request.user.developer.id)
         table["projectData"] = data
         table["objects"] = ClientFunc(request)
 
@@ -101,6 +99,8 @@ def tables(request):
 def Maps(request):
     addProject = {}
     addProject["segment"] = "project"
+    client = Client.objects.all()
+    addProject["Client"] = client
     if request.user.is_superuser:
         addProject["objects"] = AdminFunc(request)
 
@@ -121,7 +121,7 @@ def Maps(request):
         addProject["objects"] = Devfunc(request)
 
     if request.method == "POST":
-        if(request.user.usertype.userType == "Client" or request.user.is_superuser):
+        if(not request.user.is_superuser and request.user.usertype.userType == "Client"):
             title = request.POST.get("title")
             projectType = request.POST.get("ptype")
             desc = request.POST.get("desc")
@@ -130,6 +130,19 @@ def Maps(request):
             user.save()
             addProject["msg"] = "Project successfully Published"
             addProject["success"] = True
+        
+        elif(request.user.is_superuser):
+            title = request.POST.get("title")
+            projectType = request.POST.get("ptype")
+            desc = request.POST.get("desc")
+            clientname = request.POST.get("client")
+            clientData = Client.objects.filter(id=clientname)
+            user = Project(user=clientData[0], Title=title,
+                           Description=desc, projectType=projectType)
+            user.save()
+            addProject["msg"] = "Project successfully Published"
+            addProject["success"] = True
+            
 
         elif(request.user.usertype.userType == "Developer"):
             Bidamount = request.POST.get("price")
@@ -258,11 +271,11 @@ def ClientFunc(request):
     projectData = Project.objects.select_related(
         "user").filter(user=request.user.client.id)
     ApprovedData = Project.objects.select_related("user").filter(
-        user=request.user.client.id).exclude(Status="Not Accepted").count()
+        user=request.user.client.id).exclude(Status="Rejected").exclude(Status="Pending").count()
     TodaysProjects = Project.objects.filter(
         user=request.user.client.id, Date=datetime.today()).count()
     
-    RejectedProject = Project.objects.select_related("user").filter(user=request.user.client.id,Status="Not Accepted")
+    RejectedProject = Project.objects.select_related("user").filter(user=request.user.client.id,Status="Rejected")
     FileData = File.objects.select_related("user").filter(user=request.user.id)
     sales = 0
     for i in projectData:
@@ -278,7 +291,7 @@ def AdminFunc(request):
     projectData = Project.objects.all()
     TodaysProjects = Project.objects.filter(Date=datetime.today()).count()
     FileData = File.objects.select_related("user").filter(user=request.user.id)
-    RejectedProject = Project.objects.filter(Status="Not Accepted")
+    RejectedProject = Project.objects.filter(Status="Rejected")
     sales = 0
     TotalEarnings = 0
     for i in projectData:
@@ -321,7 +334,7 @@ def graphApi(request):
     if (not request.user.is_superuser and request.user.usertype.userType == "Developer"):
         counter = 0
         chatData = Assign.objects.select_related(
-            "userName").filter(userName=request.user.developer.id, Date__gte=TodayDate-timedelta(27)).filter(Date__lte=TodayDate)
+            "userName").filter(userName=request.user.developer.id, Date__gte=TodayDate-timedelta(27),projectName__Status="Completed").filter(Date__lte=TodayDate)
         
 
         while counter <= 7:
@@ -334,14 +347,14 @@ def graphApi(request):
             projectCounter[counter] = chatData.count()
             TodayDate -= timedelta(30)
             chatData = Assign.objects.select_related(
-                "userName").filter(userName=request.user.developer.id, Date__gte=TodayDate-timedelta(27)).filter(Date__lte=TodayDate)
+                "userName").filter(userName=request.user.developer.id, Date__gte=TodayDate-timedelta(27),projectName__Status="Completed").filter(Date__lte=TodayDate)
             counter += 1
 
     elif(not request.user.is_superuser and request.user.usertype.userType == "Client"):
 
         counter = 0
         chatData = Project.objects.select_related(
-            "user").filter(user=request.user.client.id, Date__gte=TodayDate-timedelta(27)).filter(Date__lte=TodayDate).exclude(Status="Not Accepted")
+            "user").filter(user=request.user.client.id, Date__gte=TodayDate-timedelta(27),Status="Completed").filter(Date__lte=TodayDate)
 
         while counter <= 7:
             actualPrice = 0
@@ -353,14 +366,14 @@ def graphApi(request):
             projectCounter[counter] = chatData.count()
             TodayDate -= timedelta(30)
             chatData = Project.objects.select_related(
-                "user").filter(user=request.user.client.id, Date__gte=TodayDate-timedelta(27)).filter(Date__lte=TodayDate).exclude(Status="Not Accepted")
+                "user").filter(user=request.user.client.id, Date__gte=TodayDate-timedelta(27),Status="Completed").filter(Date__lte=TodayDate)
             counter += 1
 
     elif(request.user.is_superuser):
 
         counter = 0
         chartData = Project.objects.filter(
-            Date__gte=TodayDate-timedelta(27)).filter(Date__lte=TodayDate).exclude(Status="Not Accepted")
+            Date__gte=TodayDate-timedelta(27),Status="Completed").filter(Date__lte=TodayDate)
         
 
         while counter <= 7:
@@ -375,7 +388,7 @@ def graphApi(request):
             superuser[counter] = coderPrice
             projectCounter[counter] = chartData.count()
             TodayDate -= timedelta(30)
-            chartData = Project.objects.filter(Date__gte=TodayDate-timedelta(27)).filter(Date__lte=TodayDate).exclude(Status="Not Accepted")
+            chartData = Project.objects.filter(Date__gte=TodayDate-timedelta(27),Status="Completed").filter(Date__lte=TodayDate)
             counter += 1
 
     else:

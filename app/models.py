@@ -25,6 +25,7 @@ class Client(models.Model):
         ("Others","Others")
     ]
     ProjectType = models.CharField(default="",choices=projectChoice,max_length=40)
+    CollegeName = models.CharField(max_length=40,null=True,blank=True)
 
 
     def __str__(self):
@@ -57,11 +58,12 @@ class Project(models.Model):
         ("100%","100%")
     ]
     status = [
-        ("Not Accepted","Not Accepted"),
+        ("Pending","Pending"),
         ("Accepted","Accepted"),
         ("Assigned","Assigned"),
         ("Delievred","Delievred"),
-        ("Completed","Completed")
+        ("Completed","Completed"),
+        ("Rejected","Rejected")
     ]
     payment = [
        ("Not Paid","Not Paid"),
@@ -79,11 +81,12 @@ class Project(models.Model):
     ActualPrice = models.IntegerField(blank=True,default=0)
     CoderPrice = models.IntegerField(blank=True,default=0)
     Description = models.CharField(max_length=200,default="")
-    Status = models.CharField(max_length=40,choices = status,default="Not Accepted")
+    Status = models.CharField(max_length=40,choices = status,default="Pending")
     PaymentStatus = models.CharField(max_length=40,choices=payment,default="Not Paid")
     projectType = models.CharField(max_length=30,choices= type,default="")
     SentTO = models.ManyToManyField(Developer,blank=True)
     CompletePercentage = models.CharField(max_length=25,blank=True,choices=percentage,default=0)
+    feedback = models.CharField(max_length=150,null=True,blank=True)
 
     def __str__(self):
         return self.Title

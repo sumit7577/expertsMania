@@ -146,6 +146,19 @@
                   placeholder="Project Title">
               </div>
             </div>
+
+            <div class="form-group" style="margin-left:15px; width: 45%;">
+              <label for="client" class="form-control-label" for="client">Client Name</label>
+              <div>
+                <select id="client" name="client"
+                  class="form-control form-control-alternative shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                  {% for i in Client %}
+                  <option value="{{ i.id }}">{{ i.user.username }}</option>
+                  {% endfor %}
+                  
+                </select>
+              </div>
+            </div>
             
           </div>
           <div class="row my-2">
