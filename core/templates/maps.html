@@ -82,7 +82,7 @@
             <div class="card-body">
               <div class="row">
                 <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">{% if request.user.usertype.userType == "Developer" and not request.user.is_superuser %} Total Unbidded Project {% else %} Today`s New Projects{% endif %}</h5>
+                  <h5 class="card-title text-uppercase text-muted mb-0">{% if request.user.usertype.userType == "Developer" and not request.user.is_superuser %} Total Unbidded Project {% elif request.user.is_superuser %} Today`s New Projects {% else %} Total Pending Projects {% endif %}</h5>
                   <span class="h2 font-weight-bold mb-0">{{ objects.0.2 }}</span>
                 </div>
                 <div class="col-auto">
@@ -135,7 +135,7 @@
       </div>
     </div>
     <div class="card-body">
-      <form action="/maps" method="post">{% csrf_token %}
+      <form action="/maps" enctype="multipart/form-data" method="post">{% csrf_token %}
         <h6 class="heading-small text-muted mb-4">Project information</h6>
         <div class="pl-lg-4">
           <div class="row">
@@ -146,7 +146,7 @@
                   placeholder="Project Title">
               </div>
             </div>
-
+            {% if request.user.is_superuser %}
             <div class="form-group" style="margin-left:15px; width: 45%;">
               <label for="client" class="form-control-label" for="client">Client Name</label>
               <div>
@@ -159,7 +159,7 @@
                 </select>
               </div>
             </div>
-            
+            {% endif %}
           </div>
           <div class="row my-2">
             <div class="col-lg-6">
@@ -172,9 +172,18 @@
                 <option>Others</option>
               </select>
             </div>
+
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="input-address">Project Documents</label>
+                <div class="form-control form-control-alternative">
+                  <input type="file" multiple id="app" name="app">
+                </div>
+              </div>
+
           </div>
         </div>
-        <h6 class="heading-small text-muted mb-4 mx-4">Description</h6>
+        <h6 class="heading-small text-muted mb-4">Description</h6>
         <div class="pl-lg-4">
           <div class="form-group">
             <textarea rows="4" id="desc" name="desc" class="form-control form-control-alternative"

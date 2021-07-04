@@ -45,7 +45,7 @@ def register_user(request):
             projectType = form.cleaned_data.get("ProjectType")
             mobile = form.cleaned_data.get("mobile")
             desc = form.cleaned_data.get("Description")
-            collegeName = form.Cleaned_data.get("College")
+            collegeName = form.cleaned_data.get("College")
             user = authenticate(username=username, password=raw_password)
             userType.objects.update_or_create(user=user,userType=usertype)
             if usertype == "Developer":

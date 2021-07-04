@@ -60,7 +60,7 @@
             <div class="card-body">
               <div class="row">
                 <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">{% if request.user.usertype.userType == "Developer" and not request.user.is_superuser %} Total Unbidded Project {% else %} Today`s New Projects{% endif %}</h5>
+                  <h5 class="card-title text-uppercase text-muted mb-0">{% if request.user.usertype.userType == "Developer" and not request.user.is_superuser %} Total Unbidded Project {% elif request.user.is_superuser %} Today`s New Projects {% else %} Total Pending Projects {% endif %}</h5>
                   <span class="h2 font-weight-bold mb-0">{{ objects.0.2 }}</span>
                 </div>
                 <div class="col-auto">
@@ -181,7 +181,6 @@
               </tr>
             </thead>
             <tbody>
-              
               {% for i in objects.0.4 %}
               <tr>
                 <th scope="row">

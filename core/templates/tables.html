@@ -62,7 +62,7 @@
             <div class="card-body">
               <div class="row">
                 <div class="col">
-                  <h5 class="card-title text-uppercase text-muted mb-0">{% if request.user.usertype.userType == "Developer" and not request.user.is_superuser %} Total Unbidded Project {% else %} Today`s New Projects{% endif %}</h5>
+                  <h5 class="card-title text-uppercase text-muted mb-0">{% if request.user.usertype.userType == "Developer" and not request.user.is_superuser %} Total Unbidded Project {% elif request.user.is_superuser %} Today`s New Projects {% else %} Total Pending Projects {% endif %}</h5>
                   <span class="h2 font-weight-bold mb-0">{{ objects.0.2 }}</span>
                 </div>
                 <div class="col-auto">
@@ -137,17 +137,21 @@
         <table class="table align-items-center table-flush">
           <thead class="thead-light">
             <tr>
+              <th scope="col">Id</th>
               <th scope="col">Project Name</th>
               <th scope="col">Project Budget</th>
               <th scope="col">Status</th>
               <th scope="col">Assigned To</th>
               <th scope="col">Completion</th>
-              <th scope="col"></th>
+              <th scope="col"></th>  
             </tr>
           </thead>
           <tbody>
             {% for i in projectData %}
             <tr>
+              <td>
+           {% if request.user.usertype.userType == "Developer" %} {{ i.projectName.id }} {% else %} {{ i.id }} {% endif %}
+              </td>
               <th scope="row">
                 <div class="media align-items-center">
                   <a href="#" class="avatar rounded-circle mr-3">
@@ -196,7 +200,7 @@
                     <i class="fas fa-ellipsis-v"></i>
                   </a>
                   <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
-                    <a class="dropdown-item" href="/project/{{i.id}}/">See Details</a>
+                    <a class="dropdown-item" href={% if request.user.usertype.userType == "Developer" %} "/project/{{i.projectName.id}}/" {% else %} "/project/{{i.id}}/" {% endif %}>See Details</a>
                   </div>
                 </div>
               </td>

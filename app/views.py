@@ -6,13 +6,14 @@ from django.template import context, loader
 from django.http import HttpResponse, request
 from django import template
 from django.contrib.auth.models import User
-from .models import Bid, Payment, Project, Developer, File,Client,Assign
+from .models import Bid, Payment, Project, Developer, File, Client, Assign
 import os
 import zipfile
 from datetime import datetime, timedelta
 from django.conf import settings
 
 projectId = None
+
 
 @login_required(login_url="/login/")
 def index(request):
@@ -75,19 +76,48 @@ def tables(request):
     table["segment"] = "tables"
 
     if(not request.user.is_superuser and request.user.usertype.userType == "Client"):
+        filterData = []
         data = Project.objects.filter(user=request.user.client)
         table["projectData"] = data
         table["objects"] = ClientFunc(request)
+        filter = request.GET.get("filter")
+
+        if filter:
+            for i in range(0, len(data)):
+                if((filter in str(data[i].id)) or (filter in data[i].Title.lower()) or (filter in data[i].Status.lower()) or (filter in str(data[i].ActualPrice)) or (filter in data[i].projectType.lower()) or (filter in data[i].PaymentStatus.lower()) ):
+                    filterData.append(data[i])
+            if(len(filterData) > 0):
+                table["projectData"] = filterData
 
     elif(not request.user.is_superuser and request.user.usertype.userType == "Developer"):
-        Projectdata = Assign.objects.filter(userName=request.user.developer.id)
+        filterData = []
+        Projectdata = Assign.objects.filter(
+            userName=request.user.developer.id).exclude(projectName__Status="Completed")
         table["projectData"] = Projectdata
         table["objects"] = Devfunc(request)
+        filter = request.GET.get("filter")
+
+        if filter:
+            for i in range(0, len(Projectdata)):
+                if((filter in str(Projectdata[i].projectName.id)) or (filter in Projectdata[i].projectName.Title.lower()) or (filter in Projectdata[i].projectName.Status.lower()) or (filter in Projectdata[i].projectName.user.user.username.lower()) or (filter in str(Projectdata[i].Amount)) or (filter in Projectdata[i].projectName.projectType.lower()) ):
+                    filterData.append(Projectdata[i])
+            if(len(filterData) > 0):
+                table["projectData"] = filterData
 
     elif(request.user.is_superuser):
+        filterData = []
         AllProjects = Project.objects.all()
+        Assigned = Assign.objects.all()
         table["projectData"] = AllProjects
         table["objects"] = AdminFunc(request)
+        filter = request.GET.get("filter")
+
+        if filter:
+            for i in range(0, len(AllProjects)):
+                if((filter in str(AllProjects[i].id)) or (filter in AllProjects[i].Title.lower()) or (filter in AllProjects[i].Status.lower()) or (filter in AllProjects[i].user.user.username.lower()) or (filter in str(AllProjects[i].ActualPrice)) or (filter in str(AllProjects[i].CoderPrice)) or (filter in AllProjects[i].projectType.lower()) or (filter in AllProjects[i].PaymentStatus.lower()) ):
+                    filterData.append(AllProjects[i])
+            if(len(filterData) > 0):
+                table["projectData"] = filterData
 
     else:
         return redirect("/register/")
@@ -104,12 +134,11 @@ def Maps(request):
     if request.user.is_superuser:
         addProject["objects"] = AdminFunc(request)
 
-    elif(request.user.is_superuser and  request.user.usertype.userType == "Client"):
+    elif(not request.user.is_superuser and request.user.usertype.userType == "Client"):
         addProject["objects"] = ClientFunc(request)
 
-    elif(not request.user.is_superuser  and request.user.usertype.userType == "Developer"):
+    elif(not request.user.is_superuser and request.user.usertype.userType == "Developer"):
         data = Project.objects.filter(SentTO=request.user.developer.id)
-
 
         for i in data:
             Bid.objects.update_or_create(
@@ -125,24 +154,34 @@ def Maps(request):
             title = request.POST.get("title")
             projectType = request.POST.get("ptype")
             desc = request.POST.get("desc")
+            file = request.FILES.getlist("app")
             user = Project(user=request.user.client, Title=title,
                            Description=desc, projectType=projectType)
             user.save()
+            
+            for i in file:
+                File.objects.create(user=request.user,
+                                    project=user, files=i, fileName=i.name)
+            
             addProject["msg"] = "Project successfully Published"
             addProject["success"] = True
-        
+
         elif(request.user.is_superuser):
             title = request.POST.get("title")
             projectType = request.POST.get("ptype")
             desc = request.POST.get("desc")
             clientname = request.POST.get("client")
+            file = request.FILES.getlist("app")
             clientData = Client.objects.filter(id=clientname)
             user = Project(user=clientData[0], Title=title,
                            Description=desc, projectType=projectType)
             user.save()
+            for i in file:
+                File.objects.create(user=request.user,
+                                    project=user, files=i, fileName=i.name)
+
             addProject["msg"] = "Project successfully Published"
             addProject["success"] = True
-            
 
         elif(request.user.usertype.userType == "Developer"):
             Bidamount = request.POST.get("price")
@@ -171,25 +210,29 @@ def project(request, id):
     data["ProjectData"] = projectData
     data["fileData"] = FilesData
     paid = 0
-    projectMoney = Payment.objects.select_related("projectName").filter(projectName=id)
+    projectMoney = Payment.objects.select_related(
+        "projectName").filter(projectName=id)
 
     for i in projectMoney:
         paid += i.Amount
     data["paid"] = paid
     create = projectData[0]
+
     if(not request.user.is_superuser and request.user.usertype.userType == "Developer"):
-        projectPrice = Assign.objects.select_related("userName").filter(userName=request.user.developer.id,projectName=create)
+        projectPrice = Assign.objects.select_related("userName").filter(
+            userName=request.user.developer, projectName=create)
         data["Price"] = projectPrice[0].Amount
 
     if request.method == "POST":
         if(not request.user.is_superuser and request.user.usertype.userType == "Client"):
-            file = request.FILES["app"]
-            File.objects.create(user=request.user,
-                                project=create, files=file, fileName=file)
+            file = request.FILES.getlist("app")
+            for i in file:
+                File.objects.create(user=request.user,
+                                    project=create, files=i, fileName=i.name)
             data["message"] = "Project Updated Succcessfully"
 
         elif(not request.user.is_superuser and request.user.usertype.userType == "Developer"):
-           
+
             file = request.FILES.getlist("app")
             for i in file:
                 File.objects.create(user=request.user,
@@ -212,7 +255,8 @@ def project(request, id):
         names = Developer.objects.select_related("user").all()
         data["Names"] = names
         data["money"] = projectMoney
-        assignedUser = Assign.objects.select_related("projectName").filter(projectName=id)
+        assignedUser = Assign.objects.select_related(
+            "projectName").filter(projectName=id)
         data["assigned"] = assignedUser
 
     return render(request, "project.html", data)
@@ -250,17 +294,34 @@ def Devfunc(request):
     data = Assign.objects.select_related(
         "userName").filter(userName=request.user.developer.id)
 
+    data2 = Assign.objects.select_related("userName").filter(
+        userName=request.user.developer.id, projectName__Status="Completed")
+
     BidProjects = Bid.objects.select_related("userName").filter(
         userName=request.user.developer.id, bidAmount__gt=0)
+    counter = BidProjects.count()
+
+    for i in range(0, len(data)):
+        BidProjects = Bid.objects.select_related("userName").filter(
+            userName=request.user.developer.id, bidAmount__gt=0).exclude(projectName=data[i].projectName)
+
+    if(len(BidProjects) == 2):
+        BidProjects = BidProjects[1:]
+
+    elif(len(BidProjects) == 1):
+        BidProjects = []
+    else:
+        BidProjects = BidProjects
 
     TodaysProjects = Bid.objects.filter(bidAmount=0).count()
 
-    FileData = File.objects.select_related("user").filter(user=request.user.id)
+    FileData = File.objects.select_related("user").filter(
+        user=request.user.id).exclude(project__Status="Completed")
 
     Earnings = 0
-    for i in data:
+    for i in data2:
         Earnings += i.Amount
-    TotalData.append((data.count(), BidProjects.count(),
+    TotalData.append((data.count(), counter,
                      TodaysProjects, Earnings, BidProjects, FileData))
 
     return TotalData
@@ -269,18 +330,27 @@ def Devfunc(request):
 def ClientFunc(request):
     TotalData = []
     projectData = Project.objects.select_related(
-        "user").filter(user=request.user.client.id)
+        "user").filter(user=request.user.client.id).count()
+
+    projectData2 = Project.objects.select_related("user").filter(
+        user=request.user.client.id, Status="Completed")
+
     ApprovedData = Project.objects.select_related("user").filter(
         user=request.user.client.id).exclude(Status="Rejected").exclude(Status="Pending").count()
+
     TodaysProjects = Project.objects.filter(
-        user=request.user.client.id, Date=datetime.today()).count()
-    
-    RejectedProject = Project.objects.select_related("user").filter(user=request.user.client.id,Status="Rejected")
-    FileData = File.objects.select_related("user").filter(user=request.user.id)
+        user=request.user.client.id, Status="Pending").count()
+
+    RejectedProject = Project.objects.select_related("user").filter(
+        user=request.user.client.id, Status="Rejected")
+    FileData = File.objects.select_related("user").filter(
+        user=request.user.id).exclude(project__Status="Completed")
     sales = 0
-    for i in projectData:
+
+    for i in projectData2:
         sales += i.ActualPrice
-    TotalData.append((projectData.count(), ApprovedData,
+
+    TotalData.append((projectData, ApprovedData,
                      TodaysProjects, sales, RejectedProject, FileData))
 
     return TotalData
@@ -289,12 +359,18 @@ def ClientFunc(request):
 def AdminFunc(request):
     TotalData = []
     projectData = Project.objects.all()
+
+    projectData2 = Project.objects.filter(Status="Completed")
     TodaysProjects = Project.objects.filter(Date=datetime.today()).count()
-    FileData = File.objects.select_related("user").filter(user=request.user.id)
+
+    FileData = File.objects.select_related("user").filter(
+        user=request.user.id).exclude(project__Status="Completed")
+
     RejectedProject = Project.objects.filter(Status="Rejected")
     sales = 0
     TotalEarnings = 0
-    for i in projectData:
+
+    for i in projectData2:
         sales += i.CoderPrice
         TotalEarnings += i.ActualPrice
     TotalData.append((projectData.count(), TotalEarnings,
@@ -308,7 +384,7 @@ def graphApi(request):
     superuser = [0, 0, 0, 0, 0, 0, 0, 0]
     projectCounter = [0, 0, 0, 0, 0, 0, 0, 0]
     monthList = []
-    tuple = (chartGraph, monthList, projectCounter,superuser)
+    tuple = (chartGraph, monthList, projectCounter, superuser)
     months = ["Unknown",
               "January",
               "Febuary",
@@ -334,8 +410,7 @@ def graphApi(request):
     if (not request.user.is_superuser and request.user.usertype.userType == "Developer"):
         counter = 0
         chatData = Assign.objects.select_related(
-            "userName").filter(userName=request.user.developer.id, Date__gte=TodayDate-timedelta(27),projectName__Status="Completed").filter(Date__lte=TodayDate)
-        
+            "userName").filter(userName=request.user.developer.id, Date__gte=TodayDate-timedelta(27), projectName__Status="Completed").filter(Date__lte=TodayDate)
 
         while counter <= 7:
             coderPrice = 0
@@ -347,14 +422,14 @@ def graphApi(request):
             projectCounter[counter] = chatData.count()
             TodayDate -= timedelta(30)
             chatData = Assign.objects.select_related(
-                "userName").filter(userName=request.user.developer.id, Date__gte=TodayDate-timedelta(27),projectName__Status="Completed").filter(Date__lte=TodayDate)
+                "userName").filter(userName=request.user.developer.id, Date__gte=TodayDate-timedelta(27), projectName__Status="Completed").filter(Date__lte=TodayDate)
             counter += 1
 
     elif(not request.user.is_superuser and request.user.usertype.userType == "Client"):
 
         counter = 0
         chatData = Project.objects.select_related(
-            "user").filter(user=request.user.client.id, Date__gte=TodayDate-timedelta(27),Status="Completed").filter(Date__lte=TodayDate)
+            "user").filter(user=request.user.client.id, Date__gte=TodayDate-timedelta(27), Status="Completed").filter(Date__lte=TodayDate)
 
         while counter <= 7:
             actualPrice = 0
@@ -366,15 +441,14 @@ def graphApi(request):
             projectCounter[counter] = chatData.count()
             TodayDate -= timedelta(30)
             chatData = Project.objects.select_related(
-                "user").filter(user=request.user.client.id, Date__gte=TodayDate-timedelta(27),Status="Completed").filter(Date__lte=TodayDate)
+                "user").filter(user=request.user.client.id, Date__gte=TodayDate-timedelta(27), Status="Completed").filter(Date__lte=TodayDate)
             counter += 1
 
     elif(request.user.is_superuser):
 
         counter = 0
         chartData = Project.objects.filter(
-            Date__gte=TodayDate-timedelta(27),Status="Completed").filter(Date__lte=TodayDate)
-        
+            Date__gte=TodayDate-timedelta(27), Status="Completed").filter(Date__lte=TodayDate)
 
         while counter <= 7:
             coderPrice = 0
@@ -388,7 +462,8 @@ def graphApi(request):
             superuser[counter] = coderPrice
             projectCounter[counter] = chartData.count()
             TodayDate -= timedelta(30)
-            chartData = Project.objects.filter(Date__gte=TodayDate-timedelta(27),Status="Completed").filter(Date__lte=TodayDate)
+            chartData = Project.objects.filter(
+                Date__gte=TodayDate-timedelta(27), Status="Completed").filter(Date__lte=TodayDate)
             counter += 1
 
     else:
@@ -438,9 +513,9 @@ def adminPanel(request, id):
             try:
                 data = Developer.objects.filter(id=assignTo)
                 projectData = Project.objects.filter(id=id)
-                Assign.objects.create(userName=data[0],Amount=assignAmount,projectName=projectData[0])
+                Assign.objects.create(
+                    userName=data[0], Amount=assignAmount, projectName=projectData[0])
             except:
-                message ="User is Already Assigned"
-           
+                message = "User is Already Assigned"
 
     return message
