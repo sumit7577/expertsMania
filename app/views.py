@@ -92,7 +92,7 @@ def tables(request):
     elif(not request.user.is_superuser and request.user.usertype.userType == "Developer"):
         filterData = []
         Projectdata = Assign.objects.filter(
-            userName=request.user.developer.id).exclude(projectName__Status="Completed")
+            userName=request.user.developer.id)
         table["projectData"] = Projectdata
         table["objects"] = Devfunc(request)
         filter = request.GET.get("filter")
@@ -107,7 +107,6 @@ def tables(request):
     elif(request.user.is_superuser):
         filterData = []
         AllProjects = Project.objects.all()
-        Assigned = Assign.objects.all()
         table["projectData"] = AllProjects
         table["objects"] = AdminFunc(request)
         filter = request.GET.get("filter")
@@ -322,7 +321,7 @@ def Devfunc(request):
     for i in data2:
         Earnings += i.Amount
     TotalData.append((data.count(), counter,
-                     TodaysProjects, Earnings, BidProjects, FileData))
+                     TodaysProjects, Earnings, BidProjects, FileData,data2.count()))
 
     return TotalData
 
@@ -351,7 +350,7 @@ def ClientFunc(request):
         sales += i.ActualPrice
 
     TotalData.append((projectData, ApprovedData,
-                     TodaysProjects, sales, RejectedProject, FileData))
+                     TodaysProjects, sales, RejectedProject, FileData,projectData2.count()))
 
     return TotalData
 
@@ -374,7 +373,7 @@ def AdminFunc(request):
         sales += i.CoderPrice
         TotalEarnings += i.ActualPrice
     TotalData.append((projectData.count(), TotalEarnings,
-                     TodaysProjects, sales, RejectedProject, FileData))
+                     TodaysProjects, sales, RejectedProject, FileData,projectData2.count()))
 
     return TotalData
 

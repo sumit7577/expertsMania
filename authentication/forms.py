@@ -4,9 +4,10 @@ from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 
 
+phone_regex = RegexValidator(regex=r'^\+1?\d{9,15}$', message="Phone number must be entered in the format: '(+12)99999'. Up to 18 digits allowed.")
 userOptions = (
-    ("Developer", "Developer"),
-    ("Client", "Client")
+    ("Client", "Client"),
+    ("Developer", "Developer")
 )
 
 Skills = (
@@ -19,7 +20,8 @@ Skills = (
 
 Project = (
     ("Production Projects", "Production Projects"),
-    ("College Projects", "College Projects"),
+    ("Assignment", "Assignment"),
+    ("Support","Support"),
     ("Others", "Others")
 )
 
@@ -96,6 +98,7 @@ class SignUpForm(UserCreationForm):
             }
         ))
 
+
     Skills = forms.ChoiceField(choices=Skills,
         widget=forms.Select(
             attrs={
@@ -103,7 +106,7 @@ class SignUpForm(UserCreationForm):
                 "id":"skills"
             }
         ))
-    
+
     ProjectType = forms.ChoiceField(choices=Project,
         widget=forms.Select(
             attrs={
@@ -111,13 +114,15 @@ class SignUpForm(UserCreationForm):
                 "id":"projectType"
             }
         ))
-    phone = RegexValidator(regex=r'^\+?1?\d{9,15}$',message="Phone number must be starting with country Code and :+91 and must be less than 15 digit")
-    mobile = forms.IntegerField(validators=[phone],
-        widget=forms.NumberInput(
+    
+   
+
+    mobile = forms.CharField(validators=[phone_regex],
+        widget=forms.TextInput(
             attrs={
-                "id":"mobile",
-                "class": "form-control",
-                "placeholder":"Mobile Number"
+                "placeholder":"Mobile Number with Country Code",
+                "class":"form-control",
+                "id":"mobile"
             }
         ))
 
@@ -130,7 +135,7 @@ class SignUpForm(UserCreationForm):
             }
         ))
 
-    College = forms.CharField(
+    College = forms.CharField(required=False,
         widget=forms.TextInput(
             attrs={
                 "id":"Cname",

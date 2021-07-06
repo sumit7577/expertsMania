@@ -74,14 +74,22 @@
 let cName = document.getElementById("collegeName");
 
 let nothing = document.getElementById("projectType");
-  if(nothing.value == "College Projects"){
+  if(nothing.value == "Assignment"){
   cName.style.display = "block";
   }
   else{
     cName.style.display = "None";
-
   }
 
+nothing.addEventListener("change",(e)=>{
+  if(e.target.value == "Assignment"){
+    let cName = document.getElementById("collegeName");
+    cName.style.display = "block";
+  }
+  else{
+    cName.style.display = "None";
+  }
+});
 
 function developer(){
   let data= document.getElementById("skiller");
@@ -99,38 +107,36 @@ function client(){
   data2.style.display = "block";
   let nothing = document.getElementById("projectType");
 
-nothing.addEventListener("change",(e)=>{
-  if(e.target.value != "College Projects"){
-    let cName = document.getElementById("collegeName");
-    cName.style.display = "None";
-  }
-  else{
-    cName.style.display = "block";
-  }
-});
-
 }
 
 let data = document.getElementById("userType");
 
-if(data.value =="Developer"){
-    let data2 = document.getElementById("projecter");
+if(data.value =="Client"){
+    let data2 = document.getElementById("skiller");
     data2.style.display = "None";
+    let nothing = document.getElementById("projectType");
+    if(nothing.value == "Assignment"){
+    cName.style.display = "block";
+    }
+    else{
+      cName.style.display = "None";
+    }
 }
 
 data.addEventListener("change",(e)=>{
   if(e.target.value =="Developer"){
     developer();
   }
-  else{
-    let nothing = document.getElementById("projectType");
-  if(nothing.value == "College Projects"){
-  cName.style.display = "block";
-  }
-  else{
-    cName.style.display = "None";
 
-  }
+  else{
+  let nothing = document.getElementById("projectType");
+  let cName = document.getElementById("collegeName");
+    if(nothing.value == "Assignment"){
+      cName.style.display = "block";
+    }
+    else{
+      cName.style.display = "None";
+    }
     client();
     
   }

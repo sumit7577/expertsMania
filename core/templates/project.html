@@ -229,7 +229,7 @@
                 <div>
                   <select  id="ptype" name="ptype"
                   class="form-control form-control-alternative shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                  <option value="{{ ProjectData.0.projectType }}">{{ ProjectData.0.projectType }}</option>
+                  <option style="display: none;" value="{{ ProjectData.0.projectType }}">{{ ProjectData.0.projectType }}</option>
                   <option>Dissertation</option>
                   <option>Assignment</option>
                   <option>Technical Report</option>
@@ -471,7 +471,7 @@
               <div>
                 <select id="prstatus" name="prstatus"
                   class="form-control form-control-alternative shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                  <option aria-hidden="true" value="{{ ProjectData.0.Status }}">{{ ProjectData.0.Status }}</option>
+                  <option style="display: none;" value="{{ ProjectData.0.Status }}">{{ ProjectData.0.Status }}</option>
                   <option>Pending</option>
                   <option>Accepted</option>
                   <option>Assigned</option>
@@ -490,7 +490,7 @@
               <div>
                 <select id="pstatus" name="pstatus"
                   class="form-control form-control-alternative shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                  <option value="{{ ProjectData.0.PaymentStatus }}">{{ ProjectData.0.PaymentStatus }}</option>
+                  <option style="display: none;" value="{{ ProjectData.0.PaymentStatus }}">{{ ProjectData.0.PaymentStatus }}</option>
                   <option>Not Paid</option>
                   <option>Partially Paid</option>
                   <option>Fully Paid</option>

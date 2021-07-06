@@ -2,7 +2,9 @@
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 # Create your models here.
+phone_regex = RegexValidator(regex=r'^\+1?\d{9,15}$', message="Phone number must be entered in the format: '+(country Code)99999'. Up to 18 digits allowed.")
 
 class userType(models.Model):
     UserChoice = [
@@ -17,11 +19,12 @@ class userType(models.Model):
 
 class Client(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
-    mobile = models.IntegerField(default=0)
+    mobile = models.CharField(validators=[phone_regex],max_length=18)
     Description = models.CharField(default="",max_length=150)
     projectChoice = [
         ("Production Projects","Production Projects"),
-        ("College Projects","College Projects"),
+        ("Assignments","Assignments"),
+        ("Support","Support"),
         ("Others","Others")
     ]
     ProjectType = models.CharField(default="",choices=projectChoice,max_length=40)
@@ -42,7 +45,7 @@ class Developer(models.Model):
     ]
     Skills = models.CharField(default="",choices=skillChoice,max_length=40)
     Description = models.CharField(default="",max_length=150)
-    mobile = models.IntegerField(default=0)
+    mobile = models.CharField(validators=[phone_regex],max_length=18)
 
 
     def __str__(self):

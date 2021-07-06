@@ -99,6 +99,16 @@
                   </div>
                   <span class="text-error">{{ form.userType.errors }}</span>
 
+                  <div class="form-group" id="projecter">
+                    <div class="input-group input-group-alternative mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                      </div>
+                      {{ form.ProjectType }}
+                    </div>
+                  </div>
+                  <span class="text-error">{{ form.ProjectType.errors }}</span>
+
                   <div class="form-group" id="skiller">
                     <div class="input-group input-group-alternative mb-3">
                       <div class="input-group-prepend">
@@ -109,15 +119,6 @@
                   </div>
                   <span class="text-error">{{ form.Skills.errors }}</span>
 
-                  <div class="form-group" id="projecter">
-                    <div class="input-group input-group-alternative mb-3">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="ni ni-email-83"></i></span>
-                      </div>
-                      {{ form.ProjectType }}
-                    </div>
-                  </div>
-                  <span class="text-error">{{ form.ProjectType.errors }}</span>
 
                   <div class="form-group" id="collegeName">
                     <div class="input-group input-group-alternative mb-3">
@@ -174,7 +175,7 @@
                       <div class="custom-control custom-control-alternative custom-checkbox">
                         <input class="custom-control-input" id="customCheckRegister" type="checkbox">
                         <label class="custom-control-label" for="customCheckRegister">
-                          <span class="text-muted">I agree with the <a href="#!">Privacy Policy</a></span>
+                          <span class="text-muted">I agree with the <a href="#">Privacy Policy</a></span>
                         </label>
                       </div>
                     </div>

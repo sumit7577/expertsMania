@@ -6,7 +6,6 @@ from django.contrib.auth import authenticate, login
 from .forms import LoginForm, SignUpForm
 from app.models import Client,Developer,userType
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ValidationError
 
 def login_view(request):
     form = LoginForm(request.POST or None)
