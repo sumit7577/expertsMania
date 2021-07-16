@@ -1,7 +1,10 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
+from django.contrib.auth.models import User
+from django.db.models.fields import BinaryField
 
 
 phone_regex = RegexValidator(regex=r'^\+1?\d{9,15}$', message="Phone number must be entered in the format: '(+12)99999'. Up to 18 digits allowed.")
@@ -10,18 +13,33 @@ userOptions = (
     ("Developer", "Developer")
 )
 
+
+def customMobileValidator(mobile):
+    print(mobile)
+    UserData = User.objects.all()
+    for i in UserData:
+        if(not i.is_superuser):
+            try:
+                if(i.developer.mobile == mobile):
+                    raise forms.ValidationError("Mobile Number already Exists")
+
+            except:
+                print("fuck")
+
+
 Skills = (
     ("Android Development", "Android Development"),
     ("Web Development", "Web Development"),
     ("Machine Learning", "Machine Learning"),
     ("Data Science", "Data Science"),
-    ("Artificial Intelligence", "Artificial Intelligence")
+    ("Artificial Intelligence", "Artificial Intelligence"),
+    ("Others","Others")
 )
 
 Project = (
-    ("Production Projects", "Production Projects"),
-    ("Assignment", "Assignment"),
-    ("Support","Support"),
+    ("Enterprise Projects", "Enterprise Projects"),
+    ("Academic Task", "Academic Task"),
+    ("Job Support","Job Support"),
     ("Others", "Others")
 )
 
@@ -99,8 +117,8 @@ class SignUpForm(UserCreationForm):
         ))
 
 
-    Skills = forms.ChoiceField(choices=Skills,
-        widget=forms.Select(
+    Skills = forms.MultipleChoiceField(choices=Skills,required=False,
+        widget=forms.SelectMultiple(
             attrs={
                 "class":"form-control",
                 "id":"skills"
@@ -117,14 +135,18 @@ class SignUpForm(UserCreationForm):
     
    
 
-    mobile = forms.CharField(validators=[phone_regex],
+    mobile = forms.CharField(validators=[phone_regex,customMobileValidator],
         widget=forms.TextInput(
             attrs={
-                "placeholder":"Mobile Number with Country Code",
+                "placeholder":"Mobile Number with Country Code ex(+1)9999",
                 "class":"form-control",
                 "id":"mobile"
             }
         ))
+
+    def mobileCheck(self):
+        mobilenumber = self.cleaned_data.get("mobile")
+        customMobileValidator(mobilenumber)
 
     Description = forms.CharField(
         widget=forms.TextInput(
@@ -143,7 +165,7 @@ class SignUpForm(UserCreationForm):
                 "placeholder":"Please Enter Your College Name"
             }
         ))
-
+    
 
     class Meta:
         model = User

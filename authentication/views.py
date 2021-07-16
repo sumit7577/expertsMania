@@ -1,3 +1,4 @@
+from re import L
 from django.shortcuts import render
 
 # Create your views here.
@@ -6,6 +7,7 @@ from django.contrib.auth import authenticate, login
 from .forms import LoginForm, SignUpForm
 from app.models import Client,Developer,userType
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 def login_view(request):
     form = LoginForm(request.POST or None)
@@ -32,7 +34,7 @@ def register_user(request):
 
     msg     = None
     success = False
-
+    
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():

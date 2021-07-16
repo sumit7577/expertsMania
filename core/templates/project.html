@@ -72,7 +72,7 @@
             <div class="col-lg-6">
               <div class="form-group">
                 <label class="form-control-label" for="input-username">Project Title</label>
-                <div class="form-control form-control-alternative">
+                <div class="form-control">
                   {{ ProjectData.0.Title }}
                 </div>
               </div>
@@ -80,7 +80,7 @@
             <div class="col-lg-6">
               <div class="form-group">
                 <label class="form-control-label" for="input-email">Published Date</label>
-                <div class="form-control form-control-alternative">
+                <div class="form-control">
                   {{ ProjectData.0.Date}}
                 </div>
               </div>
@@ -173,10 +173,10 @@
           <div class="col-lg-4">
             {% if request.user.usertype.userType == "Developer" %}
             <div class="form-group">
-              <label for="ptype" class="block text-sm font-medium text-gray-700">Completion</label>
+              <label for="ptype" class="form-control-label">Completion</label>
               <div class="form-control form-control-alternative">
                 <select id="ptype" name="ptype"
-                  class=" shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                  class="shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                   <option>25%</option>
                   <option>50%</option>
                   <option>75%</option>
@@ -255,12 +255,20 @@
                 <input type="number" class="form-control form-control-alternative" id="price" placeholder="Rs.{{ ProjectData.0.ActualPrice }}" value="{{ ProjectData.0.ActualPrice }}" name="price">
               </div>
             </div>
-            <div class="col-lg-6">
-              <div class="form-group">
-                <label class="form-control-label" for="cprice">Coder Price</label>
-                <input type="number" class="form-control form-control-alternative" id="cprice" placeholder="Rs.{{ ProjectData.0.CoderPrice }}" value="{{ ProjectData.0.CoderPrice }}" name="cprice">
+
+            <div class="form-group" style="margin-left: 15px;">
+              <label for="clientCurrency" class="form-control-label">Client Cuurency Code</label>
+              <div class="form-control form-control-alternative">
+                <select id="clientCurrency" name="clientCurrency"
+                  class="shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                  <option>25%</option>
+                  <option>50%</option>
+                  <option>75%</option>
+                  <option>100%</option>
+                </select>
               </div>
             </div>
+
           </div>
 
 
@@ -293,7 +301,13 @@
                 </div>
               </div>
             </div>
-          </div>
+
+          <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="cprice">Coder Price</label>
+                <input type="number" class="form-control form-control-alternative" id="cprice" placeholder="Rs.{{ ProjectData.0.CoderPrice }}" value="{{ ProjectData.0.CoderPrice }}" name="cprice">
+              </div>
+            </div>
 
         </div>
         <hr class="my-4" />

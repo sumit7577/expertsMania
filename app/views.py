@@ -77,7 +77,7 @@ def tables(request):
 
     if(not request.user.is_superuser and request.user.usertype.userType == "Client"):
         filterData = []
-        data = Project.objects.filter(user=request.user.client)
+        data = Project.objects.filter(user=request.user.client).order_by()
         table["projectData"] = data
         table["objects"] = ClientFunc(request)
         filter = request.GET.get("filter")
@@ -92,7 +92,7 @@ def tables(request):
     elif(not request.user.is_superuser and request.user.usertype.userType == "Developer"):
         filterData = []
         Projectdata = Assign.objects.filter(
-            userName=request.user.developer.id)
+            userName=request.user.developer)
         table["projectData"] = Projectdata
         table["objects"] = Devfunc(request)
         filter = request.GET.get("filter")

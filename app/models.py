@@ -1,4 +1,5 @@
 
+from django.forms.models import ModelMultipleChoiceField
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
@@ -22,9 +23,9 @@ class Client(models.Model):
     mobile = models.CharField(validators=[phone_regex],max_length=18)
     Description = models.CharField(default="",max_length=150)
     projectChoice = [
-        ("Production Projects","Production Projects"),
-        ("Assignments","Assignments"),
-        ("Support","Support"),
+        ("Enterprise Projects","Enterprise Projects"),
+        ("Academic Task","Academic Task"),
+        ("Job Support","Job Support"),
         ("Others","Others")
     ]
     ProjectType = models.CharField(default="",choices=projectChoice,max_length=40)
@@ -41,9 +42,10 @@ class Developer(models.Model):
         ("Android Development","Android Development"),
         ("Artificial Intelligence","Artificial Intelligence"),
         ("Machine Learning","Machine Learning"),
-        ("Data Sceince","Data Science")
+        ("Data Sceince","Data Science"),
+        ("Others","Others")
     ]
-    Skills = models.CharField(default="",choices=skillChoice,max_length=40)
+    Skills = models.CharField(default="",max_length=120)
     Description = models.CharField(default="",max_length=150)
     mobile = models.CharField(validators=[phone_regex],max_length=18)
 
@@ -68,6 +70,13 @@ class Project(models.Model):
         ("Completed","Completed"),
         ("Rejected","Rejected")
     ]
+    currency = [
+        ("EURO","EURO"),
+        ("USD","USD"),
+        ("AUD","AUD"),
+        ("SGP","SGP"),
+        ("GBP","GBP")
+    ]
     payment = [
        ("Not Paid","Not Paid"),
        ("Partially Paid","Partially Paid"),
@@ -84,6 +93,7 @@ class Project(models.Model):
     ActualPrice = models.IntegerField(blank=True,default=0)
     CoderPrice = models.IntegerField(blank=True,default=0)
     Description = models.CharField(max_length=200,default="")
+    currencyCode = models.CharField(max_length=15,choices=currency,blank=True)
     Status = models.CharField(max_length=40,choices = status,default="Pending")
     PaymentStatus = models.CharField(max_length=40,choices=payment,default="Not Paid")
     projectType = models.CharField(max_length=30,choices= type,default="")
@@ -95,8 +105,16 @@ class Project(models.Model):
         return self.Title
 
 class Bid(models.Model):
+    currency = [
+        ("EURO","EURO"),
+        ("USD","USD"),
+        ("AUD","AUD"),
+        ("SGP","SGP"),
+        ("GBP","GBP")
+    ]
     userName = models.ForeignKey(Developer,on_delete=models.CASCADE)
     projectName = models.ForeignKey(Project,on_delete=models.CASCADE)
+    currencyCode = models.CharField(max_length=15,choices=currency,blank=True)
     bidAmount = models.IntegerField(default=0)
 
     class Meta:
@@ -118,19 +136,35 @@ class File(models.Model):
 
 
 class Payment(models.Model):
+    currency = [
+        ("EURO","EURO"),
+        ("USD","USD"),
+        ("AUD","AUD"),
+        ("SGP","SGP"),
+        ("GBP","GBP")
+    ]
     projectName = models.ForeignKey(Project,null=True,on_delete=models.CASCADE)
     Amount = models.IntegerField(default=0)
     Date = models.DateField(default=timezone.now)
+    currencyCode = models.CharField(max_length=15,choices=currency,blank=True)
 
     def __str__(self):
         return self.projectName.Title
 
 
 class Assign(models.Model):
+    currency = [
+        ("EURO","EURO"),
+        ("USD","USD"),
+        ("AUD","AUD"),
+        ("SGP","SGP"),
+        ("GBP","GBP")
+    ]
     userName = models.ForeignKey(Developer,on_delete=models.CASCADE)
     projectName = models.ForeignKey(Project,on_delete=models.CASCADE)
     Amount= models.IntegerField(default=0)
     Date = models.DateField(default=timezone.now)
+    currencyCode = models.CharField(max_length=15,choices=currency,blank=True)
 
     class Meta:
         unique_together = [["userName","projectName"]]

@@ -74,7 +74,7 @@
 let cName = document.getElementById("collegeName");
 
 let nothing = document.getElementById("projectType");
-  if(nothing.value == "Assignment"){
+  if(nothing.value == "Academic Task"){
   cName.style.display = "block";
   }
   else{
@@ -82,7 +82,7 @@ let nothing = document.getElementById("projectType");
   }
 
 nothing.addEventListener("change",(e)=>{
-  if(e.target.value == "Assignment"){
+  if(e.target.value == "Academic Task"){
     let cName = document.getElementById("collegeName");
     cName.style.display = "block";
   }
@@ -115,7 +115,7 @@ if(data.value =="Client"){
     let data2 = document.getElementById("skiller");
     data2.style.display = "None";
     let nothing = document.getElementById("projectType");
-    if(nothing.value == "Assignment"){
+    if(nothing.value == "Academic Task"){
     cName.style.display = "block";
     }
     else{
@@ -131,7 +131,7 @@ data.addEventListener("change",(e)=>{
   else{
   let nothing = document.getElementById("projectType");
   let cName = document.getElementById("collegeName");
-    if(nothing.value == "Assignment"){
+    if(nothing.value == "Academic Task"){
       cName.style.display = "block";
     }
     else{
@@ -142,6 +142,7 @@ data.addEventListener("change",(e)=>{
   }
 });
 
+//developer skills controller
 
 </script>
 </html>
