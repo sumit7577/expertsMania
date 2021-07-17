@@ -105,6 +105,8 @@
             </div>
           </div>
 
+         
+
 {% if request.user.usertype.userType == "Client" and not request.user.is_superuser %}
           <div class="row">
             <div class="col-lg-6">
@@ -125,7 +127,16 @@
             </div>
           </div>
           {% endif %}
-        </div>
+        <div class="row">
+          <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="input-last-name">To be Completed</label>
+                <div class="font-mono">
+                  {% if request.user.usertype.userType == "Client" %} {{ ProjectData.0.ClientDeadline }} {% else %} {{ deadline }} {% endif %}
+                </div>
+              </div>
+            </div>
+            </div>
         <hr class="my-4" />
 
 
@@ -163,7 +174,7 @@
           <div class="col-lg-4">
             <div class="form-group">
               <label class="form-control-label" for="input-city">Project Price (Inr)</label>
-              <div class="font-mono">
+              <div class="font-mono form-control">
                 {% if request.user.usertype.userType == "Client" %}
                 Rs.{{ ProjectData.0.ActualPrice }}
                 {% else %}

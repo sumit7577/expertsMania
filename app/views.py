@@ -156,8 +156,9 @@ def Maps(request):
             projectType = request.POST.get("ptype")
             desc = request.POST.get("desc")
             file = request.FILES.getlist("app")
+            deadline = request.POST.get("deadline")
             user = Project(user=request.user.client, Title=title,
-                           Description=desc, projectType=projectType)
+                           Description=desc, projectType=projectType,ClientDeadline=deadline)
             user.save()
             
             for i in file:
@@ -173,9 +174,10 @@ def Maps(request):
             desc = request.POST.get("desc")
             clientname = request.POST.get("client")
             file = request.FILES.getlist("app")
+            deadline = request.POST.get("deadline")
             clientData = Client.objects.filter(id=clientname)
             user = Project(user=clientData[0], Title=title,
-                           Description=desc, projectType=projectType)
+                           Description=desc, projectType=projectType,ClientDeadline= deadline)
             user.save()
             for i in file:
                 File.objects.create(user=request.user,
@@ -231,10 +233,12 @@ def project(request, id):
     data["paid"] = paid
     create = projectData[0]
 
+
     if(not request.user.is_superuser and request.user.usertype.userType == "Developer"):
         projectPrice = Assign.objects.select_related("userName").filter(
             userName=request.user.developer, projectName=create)
         data["Price"] = projectPrice[0].Amount
+        data["deadline"] = projectPrice[0].DeveloperDeadline
 
     if request.method == "POST":
         if(not request.user.is_superuser and request.user.usertype.userType == "Client"):
