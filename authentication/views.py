@@ -34,7 +34,6 @@ def register_user(request):
 
     msg     = None
     success = False
-    
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():

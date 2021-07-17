@@ -15,17 +15,16 @@ userOptions = (
 
 
 def customMobileValidator(mobile):
-    print(mobile)
-    UserData = User.objects.all()
-    for i in UserData:
-        if(not i.is_superuser):
-            try:
-                if(i.developer.mobile == mobile):
-                    raise forms.ValidationError("Mobile Number already Exists")
+    data = False
+    try:
+        data = User.objects.filter(client__mobile=mobile).exists()
+    except:
+        data = User.objects.filter(developer__mobile= mobile).exists()
+    
+    if(data == True):
+        raise forms.ValidationError("Mobile Number already Exists")
 
-            except:
-                print("fuck")
-
+        
 
 Skills = (
     ("Android Development", "Android Development"),
@@ -146,7 +145,7 @@ class SignUpForm(UserCreationForm):
 
     def mobileCheck(self):
         mobilenumber = self.cleaned_data.get("mobile")
-        customMobileValidator(mobilenumber)
+        data = customMobileValidator(mobilenumber)
 
     Description = forms.CharField(
         widget=forms.TextInput(

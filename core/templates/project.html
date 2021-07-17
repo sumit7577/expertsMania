@@ -72,7 +72,7 @@
             <div class="col-lg-6">
               <div class="form-group">
                 <label class="form-control-label" for="input-username">Project Title</label>
-                <div class="form-control">
+                <div class="font-mono" >
                   {{ ProjectData.0.Title }}
                 </div>
               </div>
@@ -80,7 +80,7 @@
             <div class="col-lg-6">
               <div class="form-group">
                 <label class="form-control-label" for="input-email">Published Date</label>
-                <div class="form-control">
+                <div class="font-mono">
                   {{ ProjectData.0.Date}}
                 </div>
               </div>
@@ -90,7 +90,7 @@
             <div class="col-lg-6">
               <div class="form-group">
                 <label class="form-control-label" for="input-first-name">Project Type</label>
-                <div class="form-control form-control-alternative">
+                <div class="font-mono">
                   {{ ProjectData.0.projectType }}
                 </div>
               </div>
@@ -98,7 +98,7 @@
             <div class="col-lg-6">
               <div class="form-group">
                 <label class="form-control-label" for="input-last-name">Published By</label>
-                <div class="form-control form-control-alternative">
+                <div class="font-mono">
                   {{ ProjectData.0.user.user.username }}
                 </div>
               </div>
@@ -110,7 +110,7 @@
             <div class="col-lg-6">
               <div class="form-group">
                 <label class="form-control-label" for="input-first-name">Total Amount Paid</label>
-                <div class="form-control form-control-alternative">
+                <div class="font-mono">
                   Rs.{{ paid }}
                 </div>
               </div>
@@ -118,7 +118,7 @@
             <div class="col-lg-6">
               <div class="form-group">
                 <label class="form-control-label" for="input-last-name">Payment Status</label>
-                <div class="form-control form-control-alternative">
+                <div class="font-mono"">
                   {{ ProjectData.0.PaymentStatus }}
                 </div>
               </div>
@@ -150,8 +150,10 @@
                   <a href="{{ i.files.url }}"  download="{{ i.fileName }}">{{ i.fileName }} </a>
                 </div>
                   {% empty %}
-                  <h1> no data</h1>
-                  {% endfor %}
+                  <div class="font-mono">
+                  <h2> No Data</h2>
+                </div>
+                {% endfor %}
                 </div>
               </div>
             </div>
@@ -161,7 +163,7 @@
           <div class="col-lg-4">
             <div class="form-group">
               <label class="form-control-label" for="input-city">Project Price (Inr)</label>
-              <div class="form-control form-control-alternative">
+              <div class="font-mono">
                 {% if request.user.usertype.userType == "Client" %}
                 Rs.{{ ProjectData.0.ActualPrice }}
                 {% else %}
@@ -194,7 +196,7 @@
         <div class="pl-lg-4">
           <div class="form-group">
             <label>Project Description</label>
-            <div class="form-control form-control-alternative">{{ ProjectData.0.Description}} </div>
+            <div class="font-mono">{{ ProjectData.0.Description}} </div>
           </div>
         </div>
         <button type="submit" style="margin-left:15px; margin-top:8px;" class="btn btn-info">Update</button>
@@ -216,7 +218,7 @@
             <div class="col-lg-6">
               <div class="form-group">
                 <label class="form-control-label" for="input-email">Published Date</label>
-                <div class="form-control form-control-alternative">
+                <div class="font-mono">
                   {{ ProjectData.0.Date}}
                 </div>
               </div>
@@ -241,7 +243,7 @@
             <div class="col-lg-6">
               <div class="form-group">
                 <label class="form-control-label" for="input-last-name">Published By</label>
-                <div class="form-control form-control-alternative">
+                <div class="font-mono">
                   {{ ProjectData.0.user.user.username }}
                 </div>
               </div>
@@ -261,10 +263,11 @@
               <div class="form-control form-control-alternative">
                 <select id="clientCurrency" name="clientCurrency"
                   class="shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                  <option>25%</option>
-                  <option>50%</option>
-                  <option>75%</option>
-                  <option>100%</option>
+                 <option>EURO</option>
+                 <option>USD</option>
+                 <option>AUD</option>
+                 <option>SGP</option>
+                 <option>GBP</option>
                 </select>
               </div>
             </div>
@@ -276,7 +279,7 @@
             <div class="col-lg-6">
               <div class="form-group">
                 <label class="form-control-label" for="input-last-name">Complete Percentage</label>
-                <div class="form-control form-control-alternative">
+                <div class="font-mono">
                   {{ ProjectData.0.CompletePercentage }}
                 </div>
               </div>
@@ -284,7 +287,7 @@
             <div class="col-lg-6">
               <div class="form-group">
                 <label class="form-control-label" for="input-last-name">Total Client Paid</label>
-                <div class="form-control form-control-alternative">
+                <div class="font-mono">
                   Rs.{{ paid }}
                 </div>
               </div>
@@ -296,7 +299,7 @@
             <div class="col-lg-6">
               <div class="form-group">
                 <label class="form-control-label" for="input-last-name">Sended For Bid</label>
-                <div class="form-control form-control-alternative">
+                <div class="font-mono">
                   {% for z in sended %} {{ z.user.username }}, {% empty %} Not Sended {% endfor %}
                 </div>
               </div>
@@ -310,6 +313,26 @@
             </div>
 
         </div>
+
+      <div class="row">
+        <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="cprice">Client Deadline</label>
+                <input value="{{ ProjectData.0.ClientDeadline|date:"Y m d" }}" type="date" class="form-control form-control-alternative" id="clientdeadline" name="clientdeadline">
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-control-label" for="cprice">Client Deadline</label>
+                <div class="font-mono">
+                {{ ProjectData.0.ClientDeadline }}
+              </div>
+              </div>
+            </div>
+
+        </div>
+
         <hr class="my-4" />
 
         <h6 class="heading-small text-muted mb-4">Bids information</h6>
@@ -335,9 +358,6 @@
             
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
-                  <div class="flex-shrink-0 h-10 w-10">
-                    <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60" alt="">
-                  </div>
                   <div class="ml-4">
                     <div class="text-sm font-medium text-gray-900">
                       {{ k.userName.user.username }}
@@ -385,7 +405,9 @@
                   <a href="{{ i.files.url }}"  download="{{ i.fileName }}">{{ i.fileName }} </a> ({{ i.user.username }}) (Date:{{ i.date }})
                 </div>
                   {% empty %}
+                  <div class="font-mono">
                   <h2> No Data</h2>
+                </div>
                   {% endfor %}
                 </div>
               </div>
@@ -428,6 +450,13 @@
                 <input type="number" class="form-control form-control-alternative" id="amount" name="amount" placeholder="Enter Price for specific Developer">
             </div>
           </div>
+
+          <div class="col-lg-4">
+            <div class="form-group">
+              <label class="form-control-label" for="deadline">Developer Deadline</label>
+                <input type="date" class="form-control form-control-alternative" id="deadline" name="deadline" placeholder="Enter deadline for specific Developer">
+            </div>
+          </div>
         </div>
 
 
@@ -448,7 +477,10 @@
                 Amount
               </th>
               <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Date
+                Assign Date
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Developer Deadline
               </th>
             </tr>
           </thead>
@@ -464,6 +496,9 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm text-gray-900">{{ k.Date }}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">{{ k.DeveloperDeadline }}</div>
               </td>
              
             </tr>
@@ -536,7 +571,7 @@
                 Paid Amount
               </th>
               <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Date
+                Payment Date
               </th>
             </tr>
           </thead>

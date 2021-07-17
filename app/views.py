@@ -17,13 +17,15 @@ projectId = None
 
 @login_required(login_url="/login/")
 def index(request):
+    global projectId
+    projectId = None
     context = {}
     context['segment'] = 'index'
     if(not request.user.is_superuser and request.user.usertype.userType == "Developer"):
         try:
             request.user.developer
         except:
-            return redirect("/profile")
+            return redirect("/register/")
         context["objects"] = Devfunc(request)
         context["api"] = graphApi(request)
 
@@ -31,7 +33,7 @@ def index(request):
         try:
             request.user.client
         except:
-            return redirect("/profile")
+            return redirect("/register/")
         context["objects"] = ClientFunc(request)
         context["api"] = graphApi(request)
 
@@ -182,20 +184,32 @@ def Maps(request):
             addProject["msg"] = "Project successfully Published"
             addProject["success"] = True
 
-        elif(request.user.usertype.userType == "Developer"):
-            Bidamount = request.POST.get("price")
-            projectId = request.POST.get("none")
-            try:
-                Bid.objects.filter(projectName=projectId, userName=request.user.developer.id).update(
-                    bidAmount=Bidamount)
-                addProject["msg"] = "Bid Succesfully done"
-                addProject["success"] = True
-            except:
-                addProject["msg"] = "Something went Wrong"
-
         else:
             return redirect("/register/")
     return render(request, "maps.html", addProject)
+
+
+@login_required(login_url="/login")
+def developerBid(request,id):
+    if(not request.user.usertype.userType == "Developer"):
+        return redirect("/")
+    message = None
+    projectData = {}
+    BidProjects = Bid.objects.filter(id=id)
+    global projectId
+    projectId = BidProjects[0].projectName.id
+
+    projectData["bidData"] = BidProjects
+    if request.method == "POST":
+        BidAmount = request.POST.get("price")
+        try:
+            Bid.objects.filter(id=id).update(bidAmount=BidAmount)
+            projectData["message"] = "Project Successfully Bided"
+            return redirect("/maps")
+        except:
+            projectData["message"] = "Something error happened"
+    
+    return render(request,"bid.html",projectData)
 
 
 @login_required(login_url="/login/")
@@ -285,7 +299,7 @@ def download(request):
         try:
             return response
         except:
-            return redirect("/tables")
+            return redirect("/")
 
 
 def Devfunc(request):
@@ -314,14 +328,14 @@ def Devfunc(request):
 
     TodaysProjects = Bid.objects.filter(bidAmount=0).count()
 
-    FileData = File.objects.select_related("user").filter(
-        user=request.user.id).exclude(project__Status="Completed")
+    AssignData = Assign.objects.select_related("userName").filter(
+        userName=request.user.developer.id).exclude(projectName__Status="Completed")
 
     Earnings = 0
     for i in data2:
         Earnings += i.Amount
     TotalData.append((data.count(), counter,
-                     TodaysProjects, Earnings, BidProjects, FileData,data2.count()))
+                     TodaysProjects, Earnings, BidProjects, AssignData,data2.count()))
 
     return TotalData
 
@@ -342,15 +356,16 @@ def ClientFunc(request):
 
     RejectedProject = Project.objects.select_related("user").filter(
         user=request.user.client.id, Status="Rejected")
-    FileData = File.objects.select_related("user").filter(
-        user=request.user.id).exclude(project__Status="Completed")
+
+    ApproveData = Project.objects.select_related("user").filter(
+        user=request.user.client.id, Status="Accepted")
     sales = 0
 
     for i in projectData2:
         sales += i.ActualPrice
 
     TotalData.append((projectData, ApprovedData,
-                     TodaysProjects, sales, RejectedProject, FileData,projectData2.count()))
+                     TodaysProjects, sales, RejectedProject, ApproveData,projectData2.count()))
 
     return TotalData
 
@@ -360,10 +375,7 @@ def AdminFunc(request):
     projectData = Project.objects.all()
 
     projectData2 = Project.objects.filter(Status="Completed")
-    TodaysProjects = Project.objects.filter(Date=datetime.today()).count()
-
-    FileData = File.objects.select_related("user").filter(
-        user=request.user.id).exclude(project__Status="Completed")
+    TodaysProjects = Project.objects.filter(Date=datetime.today())
 
     RejectedProject = Project.objects.filter(Status="Rejected")
     sales = 0
@@ -373,7 +385,7 @@ def AdminFunc(request):
         sales += i.CoderPrice
         TotalEarnings += i.ActualPrice
     TotalData.append((projectData.count(), TotalEarnings,
-                     TodaysProjects, sales, RejectedProject, FileData,projectData2.count()))
+                     TodaysProjects.count(), sales, RejectedProject, TodaysProjects,projectData2.count(),RejectedProject.count()))
 
     return TotalData
 
@@ -500,9 +512,12 @@ def adminPanel(request, id):
         clientPaid = request.POST.get("clientPaid")
         description = request.POST.get("desc")
         assignAmount = request.POST.get("amount")
+        developerDeadline= request.POST.get("deadline")
+        clientDeadline = request.POST.get("clientdeadline")
+        currencyCode = request.POST.get("clientCurrency")
 
         Project.objects.filter(id=id).update(Title=projectName, projectType=projectType, ActualPrice=clientPrice,
-                                             CoderPrice=coderPrice, Status=projectStatus, PaymentStatus=paymentStatus, Description=description)
+                                             CoderPrice=coderPrice, Status=projectStatus, PaymentStatus=paymentStatus, Description=description,currencyCode=currencyCode)
         message = "Project Successfully Updated"
 
         if clientPaid != "":
@@ -513,8 +528,13 @@ def adminPanel(request, id):
                 data = Developer.objects.filter(id=assignTo)
                 projectData = Project.objects.filter(id=id)
                 Assign.objects.create(
-                    userName=data[0], Amount=assignAmount, projectName=projectData[0])
+                    userName=data[0], Amount=assignAmount, projectName=projectData[0],DeveloperDeadline= developerDeadline)
             except:
                 message = "User is Already Assigned"
+        if clientDeadline != "":
+            Project.objects.filter(id=id).update(Title=projectName, projectType=projectType, ActualPrice=clientPrice,
+                                             CoderPrice=coderPrice, Status=projectStatus, PaymentStatus=paymentStatus, Description=description,ClientDeadline = clientDeadline,currencyCode=currencyCode)
+            message = "Project Successfully Updated"
+
 
     return message

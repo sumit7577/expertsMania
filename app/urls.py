@@ -12,6 +12,7 @@ urlpatterns = [
     path("maps",views.Maps,name="maps"),
     path("project/<str:id>/",views.project,name="project"),
     path("fileDownload",views.download,name="downlaod"),
+    path("bid/<str:id>/",views.developerBid,name="bid"),
 
     # Matches any html file
     re_path(r'^.*\.*', views.pages, name='pages'),

@@ -14,7 +14,7 @@
         <div class="row">
           <div class="col-lg-7 col-md-10">
             <h1 class="display-2 text-white"> {{ request.user.username }}</h1>
-            <p class="text-white mt-0 mb-5">This is your profile page. You can see Your Person Information here</p>
+            <p class="text-white mt-0 mb-5">This is your profile page. You can see Your Personal Information here</p>
             <a href="#" class="btn btn-info">Watch profile</a>
           </div>
         </div>
@@ -43,13 +43,13 @@
               </div>-->
 
             </div>
-            <div class="card-body pt-0 pt-md-4">
+            <div class="card-body pt-0 pt-md-4 mt-4">
               <div class="row">
                 <div class="col">
                
                 </div>
               </div>
-              <div class="text-center">
+              <div class="text-center mt-4">
                 <h3>
                   {{ request.user.username }}
                 </h3>
@@ -84,7 +84,7 @@
                     <div class="col-lg-6">
                       <div class="form-group">
                         <label class="form-control-label" for="input-username">Username</label>
-                        <div class="form-control form-control-alternative">
+                        <div class="font-mono">
                         {{ request.user.username }}
                       </div>
                       </div>
@@ -92,7 +92,7 @@
                     <div class="col-lg-6">
                       <div class="form-group">
                         <label class="form-control-label" for="input-email">Email address</label>
-                        <div class="form-control form-control-alternative">
+                        <div class="font-mono">
                           {{ request.user.email }}
                         </div>
                       </div>
@@ -102,7 +102,7 @@
                     <div class="col-lg-6">
                       <div class="form-group">
                         <label class="form-control-label" for="input-first-name">First name</label>
-                        <div class="form-control form-control-alternative">
+                        <div class="font-mono">
                           {{ request.user.first_name }}
                         </div>
                       </div>
@@ -110,7 +110,7 @@
                     <div class="col-lg-6">
                       <div class="form-group">
                         <label class="form-control-label" for="input-last-name">Last name</label>
-                        <div class="form-control form-control-alternative">
+                        <div class="font-mono">
                           {{ request.user.last_name }}
                         </div>
                       </div>
@@ -124,8 +124,8 @@
                   <div class="row">
                     <div class="col-md-12">
                       <div class="form-group">
-                        <label class="form-control-label" for="input-address">{% if request.usertype.userType == "Developer" and not request.user.is_superuser %}Skills  {% else %} Project Type {% endif %}</label>
-                        <div class="form-control form-control-alternative">
+                        <label class="form-control-label" for="input-address">{% if not request.user.is_superuser and request.user.usertype.userType == "Developer" %} Skills {% else %} Project Type{% endif %}</label>
+                        <div class="font-mono">
                           {{ request.user.developer.Skills }} {{ request.user.client.ProjectType }}
                         </div>
                       </div>
@@ -135,7 +135,7 @@
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label class="form-control-label" for="input-city">Mobile Number</label>
-                        <div class="form-control form-control-alternative">
+                        <div class="font-mono">
                           {{ request.user.developer.mobile }} {{ request.user.client.mobile}}
                         </div>
                       </div>
@@ -143,7 +143,7 @@
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label class="form-control-label" for="input-country">User Type</label>
-                        <div class="form-control form-control-alternative">
+                        <div class="font-mono">
                           {{ request.user.usertype.userType }}
                         </div>
                       </div>
@@ -156,8 +156,7 @@
                 <h6 class="heading-small text-muted mb-4">About me</h6>
                 <div class="pl-lg-4">
                   <div class="form-group">
-                    <label>About Me</label>
-                    <div class="form-control form-control-alternative">
+                    <div class="font-mono">
                           {{ request.user.developer.Description }} {{ request.user.client.Description }}
                         </div>
                       </div>

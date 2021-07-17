@@ -1,0 +1,132 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Bid {% endblock title %}
+
+
+{% block content %}
+
+<style>
+    .typeo {
+        position: relative;
+        bottom: 50px;
+        left: 50px;
+    }
+</style>
+
+{% if message %}
+<div class="header-body heading" id="popup">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Success!!</strong> {{message}}
+    </div>
+</div>
+{% endif %}
+<!-- Header -->
+<div class="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
+    style="min-height: 600px; background-image: url(/static/assets/img/theme/team-3-800x800.jpg); background-size: cover; background-position: center top;">
+    <!-- Mask -->
+    <span class="mask bg-gradient-default opacity-8"></span>
+
+    <!-- Header container -->
+    <div class="container-fluid d-flex align-items-center">
+
+        <div class="row">
+            <div class="col-lg-7 col-md-10">
+                <h2 class="display-2 text-white"> Title: {{ bidData.0.projectName.Title }}</h2>
+                <p class="text-white mt-0 mb-5">This is your Bid Project View. You can see and bid projects here</p>
+                <button id="fetchdata" class="btn btn-info">Download Docs</button>
+            </div>
+
+        </div>
+    </div>
+
+
+
+</div>
+
+<!-- Header -->
+<div class="col-xl-8 order-xl-1 typeo">
+    <div class="card bg-secondary shadow manual">
+        <div class="card-header bg-white border-0">
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <h3 class="mb-0">Bid Project</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <form action="/bid/{{ bidData.0.id }}/" method="post">{% csrf_token %}
+                <h6 class="heading-small text-muted mb-4">Project information</h6>
+                <div class="pl-lg-4">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="title">Project Title: </label>
+                                <div class="font-mono">
+                                    {{ bidData.0.projectName.Title }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="price">Project Type: </label>
+                                <div class="font-mono">
+                                    {{ bidData.0.projectName.projectType }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="title">Published Date: </label>
+                                <div class="font-mono">
+                                    {{ bidData.0.projectName.Date }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" for="price">Bid Amount</label>
+                                <input type="number" class="form-control form-control-alternative" name="price"
+                                    id="price" placeholder="price">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h6 class="heading-small text-muted mb-4 mx-4">Project Description</h6>
+                <div class="pl-lg-4">
+                    <div class="form-group font-mono">
+                        {{ bidData.0.projectName.Description }}
+                    </div>
+                    <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                        <button type="submit"
+                            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Bid
+                        </button>
+                    </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    let ab = document.getElementById("popup");
+    if (ab) {
+        setTimeout(() => {
+            ab.remove();
+        }, 2000);
+    }
+
+    async function fetchData() {
+        const data = window.location;
+        const url = data.origin + "/fileDownload";
+        window.open(url, "_blank");
+    }
+
+    const button = document.getElementById("fetchdata").addEventListener("click", fetchData);
+
+</script>
+
+{% endblock content %}

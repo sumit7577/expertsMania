@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Client,Project,userType,Developer,Bid,File,Payment,Assign
+from django.db import models
 
 # Register your models here.
 admin.site.register(Client)

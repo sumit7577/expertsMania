@@ -1,5 +1,3 @@
-
-from django.forms.models import ModelMultipleChoiceField
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
@@ -94,6 +92,7 @@ class Project(models.Model):
     CoderPrice = models.IntegerField(blank=True,default=0)
     Description = models.CharField(max_length=200,default="")
     currencyCode = models.CharField(max_length=15,choices=currency,blank=True)
+    ClientDeadline = models.DateField(blank=True,null=True)
     Status = models.CharField(max_length=40,choices = status,default="Pending")
     PaymentStatus = models.CharField(max_length=40,choices=payment,default="Not Paid")
     projectType = models.CharField(max_length=30,choices= type,default="")
@@ -160,6 +159,7 @@ class Assign(models.Model):
         ("SGP","SGP"),
         ("GBP","GBP")
     ]
+    DeveloperDeadline = models.DateField(blank=True,null=True)
     userName = models.ForeignKey(Developer,on_delete=models.CASCADE)
     projectName = models.ForeignKey(Project,on_delete=models.CASCADE)
     Amount= models.IntegerField(default=0)

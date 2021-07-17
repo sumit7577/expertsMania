@@ -228,93 +228,81 @@
 </div>
 {% else %}
 
-<div class="col-xl-8 order-xl-1 typeo">
-  {% for i in bidProject %}
-  <div class="card bg-secondary shadow manual">
-    <div class="card-header bg-white border-0">
-      <div class="row align-items-center">
-        <div class="col-8">
-          <h3 class="mb-0">Bid Project</h3>
-        </div>
-      </div>
-    </div>
-    <div class="card-body">
-      <form action="/maps" method="post">{% csrf_token %}
-        <h6 class="heading-small text-muted mb-4">Project information</h6>
-        <div class="pl-lg-4">
-          <div class="row">
-            <div class="col-lg-6">
-              <div class="form-group">
-                <label class="form-control-label" for="title">Project Title: </label>
-                <div class="form-control form-control-alternative">
-                {{i.projectName.Title}}
-              </div>
-              </div>
-            </div>
-            <input type="hidden" name="none" id="none" value="{{i.projectName.id}}" >
-            <div class="col-lg-6">
-              <div class="form-group">
-                <label class="form-control-label" for="price">Project Type: </label>
-                <div class="form-control form-control-alternative">
-                {{i.projectName.projectType}}
-              </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-6">
-              <div class="form-group">
-                <label class="form-control-label" for="title">Published Date: </label>
-                <div class="form-control form-control-alternative">
-                {{i.projectName.Date}}
+
+<div class="flex flex-col typeo" style="width: 80%; max-height: 500px;overflow-x: scroll;">
+  <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+    <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+      <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Project Name
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Description
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Project Type
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Role
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            {% for i in bidProject %}
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="ml-4">
+                    <div class="text-sm font-medium text-gray-900">
+                      <a href="bid/{{ i.id }}/">{{ i.projectName.Title }}</a>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">{{ i.projectName.Description|truncatechars:23 }}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                  {{ i.projectName.projectType }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ i.projectName.Date }}
+              </td>
+            </tr>
+
+            {% empty %}
+            <div class="card bg-secondary shadow manual">
+              <div class="card-header bg-white border-0">
+                <div class="row align-items-center">
+                  <div class="col-8">
+                    <h3 class="mb-0">Seems Nothing!!</h3>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="col-lg-6">
-              <div class="form-group">
-                <label class="form-control-label" for="price">Bid Amount</label>
-                <input type="number"  class="form-control form-control-alternative" name="price" id="price"  
-                  placeholder="price">
+              <div class="card-body">
+                <img class="sadFace" src="static/assets/img/brand/sad.png" alt="Image">
+          
+                <div class="text-2xl font-mono text-left mt-4 ms-5">
+                  It look`s like you dont have any projects for Bid!!!      
+                </div>
               </div>
+          
             </div>
-          </div>
-        </div>
-        <h6 class="heading-small text-muted mb-4 mx-4">Project Description</h6>
-        <div class="pl-lg-4">
-          <div class="form-group  form-control form-control-alternative">
-            {{i.projectName.Description}}
-          </div>
-          <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-            <button type="submit"
-              class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-              Bid
-            </button>
-          </div>
-      </form>
-    </div>
+            {% endfor %}
 
-  </div>
-  <hr class="my-4" />
-  {% empty %}
-  <div class="card bg-secondary shadow manual">
-    <div class="card-header bg-white border-0">
-      <div class="row align-items-center">
-        <div class="col-8">
-          <h3 class="mb-0">Seems Nothing!!</h3>
-        </div>
+            <!-- More people... -->
+          </tbody>
+        </table>
       </div>
     </div>
-    <div class="card-body">
-      <img class="sadFace" src="static/assets/img/brand/sad.png" alt="Image">
-
-      <div class="text-2xl font-mono text-left mt-4 ms-5">
-        Its like you dont have any projects for Bid!!!      
-      </div>
-    </div>
-
   </div>
-  {% endfor %}
 </div>
+
 
 {% endif %}
 
