@@ -1,6 +1,5 @@
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from django.db.models.query import prefetch_related_objects
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template import context, loader
 from django.http import HttpResponse, request
@@ -79,7 +78,7 @@ def tables(request):
 
     if(not request.user.is_superuser and request.user.usertype.userType == "Client"):
         filterData = []
-        data = Project.objects.filter(user=request.user.client).order_by()
+        data = Project.objects.filter(user=request.user.client)
         table["projectData"] = data
         table["objects"] = ClientFunc(request)
         filter = request.GET.get("filter")
@@ -243,9 +242,11 @@ def project(request, id):
     if request.method == "POST":
         if(not request.user.is_superuser and request.user.usertype.userType == "Client"):
             file = request.FILES.getlist("app")
+            discussion = request.POST.get("client")
             for i in file:
                 File.objects.create(user=request.user,
                                     project=create, files=i, fileName=i.name)
+            Project.objects.filter(id=id).update(ClientDiscussion=discussion)
             data["message"] = "Project Updated Succcessfully"
 
         elif(not request.user.is_superuser and request.user.usertype.userType == "Developer"):
@@ -255,7 +256,8 @@ def project(request, id):
                 File.objects.create(user=request.user,
                                     project=create, files=i, fileName=i.name)
             status = request.POST.get("ptype")
-            Project.objects.filter(id=id).update(CompletePercentage=status)
+            discussion = request.POST.get("developer")
+            Project.objects.filter(id=id).update(CompletePercentage=status,DeveloperDiscussion=discussion)
             data["message"] = "Project Updated Succcessfully"
 
         elif(request.user.is_superuser):
@@ -384,12 +386,14 @@ def AdminFunc(request):
     RejectedProject = Project.objects.filter(Status="Rejected")
     sales = 0
     TotalEarnings = 0
+    
 
     for i in projectData2:
         sales += i.CoderPrice
         TotalEarnings += i.ActualPrice
+    revenue = TotalEarnings-sales
     TotalData.append((projectData.count(), TotalEarnings,
-                     TodaysProjects.count(), sales, RejectedProject, TodaysProjects,projectData2.count(),RejectedProject.count()))
+                     TodaysProjects.count(), sales, RejectedProject, TodaysProjects,projectData2.count(),RejectedProject.count(),revenue))
 
     return TotalData
 
@@ -501,6 +505,7 @@ def adminPanel(request, id):
         clientPrice = request.POST.get("price")
         coderPrice = request.POST.get("cprice")
         sendToBid = request.POST.getlist("sender")
+        percentage = request.POST.get("percent")
         data = Project.objects.get(id=id)
         data.SentTO.set(sendToBid)
         message = "Project Successfully Updated"
@@ -521,7 +526,7 @@ def adminPanel(request, id):
         currencyCode = request.POST.get("clientCurrency")
 
         Project.objects.filter(id=id).update(Title=projectName, projectType=projectType, ActualPrice=clientPrice,
-                                             CoderPrice=coderPrice, Status=projectStatus, PaymentStatus=paymentStatus, Description=description,currencyCode=currencyCode)
+                                             CoderPrice=coderPrice, Status=projectStatus, PaymentStatus=paymentStatus, Description=description,currencyCode=currencyCode,CompletePercentage=percentage)
         message = "Project Successfully Updated"
 
         if clientPaid != "":

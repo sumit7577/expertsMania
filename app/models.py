@@ -99,6 +99,8 @@ class Project(models.Model):
     SentTO = models.ManyToManyField(Developer,blank=True)
     CompletePercentage = models.CharField(max_length=25,blank=True,choices=percentage,default=0)
     feedback = models.CharField(max_length=150,null=True,blank=True)
+    ClientDiscussion = models.CharField(max_length=250,null=True,blank=True)
+    DeveloperDiscussion = models.CharField(max_length=250,blank=True,null=True)
 
     def __str__(self):
         return self.Title
@@ -127,6 +129,7 @@ class File(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     project = models.ForeignKey(Project,on_delete=models.CASCADE)
     files = models.FileField(blank=True,upload_to="projects")
+    Verified = models.BooleanField(blank=True,null=True)
     fileName = models.CharField(max_length=100,blank=True)
     date = models.DateField(default=timezone.now)
 
